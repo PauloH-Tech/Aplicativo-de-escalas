@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_escalas_front/screens/home_screen.dart';
+import 'widgets/app_theme.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const EscalaExtraApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class EscalaExtraApp extends StatelessWidget {
+  const EscalaExtraApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp(
+      title: 'Escalas Extras',
+      theme: AppTheme.theme,
+      debugShowCheckedModeBanner: false,
+      home: const HomeScreen(),
     );
   }
 }
