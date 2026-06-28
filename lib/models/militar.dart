@@ -23,14 +23,14 @@ class Militar {
     id: j['id'],
     nome: j['nome'],
     stAtivo: j['st_ativo'] ?? j['st_ativo'] ?? true,
-    graduacao: j['graduacao']
+    graduacao: Graduacao.fromString(j['graduacao'])
   );
 
   Map<String, dynamic> toJson() => {
     'nome': nome,
     'st_ativo': stAtivo,
     'id': id,
-    'graduacao': graduacao
+    'graduacao': graduacao.value
   };
 
   // Porcentagem formatada da taxa para exibir no card

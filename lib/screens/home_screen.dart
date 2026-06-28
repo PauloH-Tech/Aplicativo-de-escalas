@@ -1,7 +1,9 @@
 
 import 'package:flutter/material.dart';
+import 'package:sistema_escalas_front/screens/rodada_screen.dart';
 
 import 'configurations_screen.dart';
+import 'militares_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final _screens = const [
     FilaScreen(),
-    RodadasScreen(),
+    RodadaScreen(),
     MilitaresScreen(),
     AfastamentosScreen(),
   ];
@@ -75,25 +77,8 @@ class AfastamentosScreen extends StatelessWidget{
   }
 }
 
-class MilitaresScreen extends StatelessWidget{
-  const MilitaresScreen();
 
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold();
-  }
-}
 
-class RodadasScreen extends StatelessWidget {
-  const RodadasScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold();
-  }
-}
 
 class FilaScreen extends StatelessWidget{
   const FilaScreen();
