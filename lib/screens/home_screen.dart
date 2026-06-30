@@ -1,7 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:sistema_escalas_front/screens/rodada_screen.dart';
 
+import 'rodada_screen.dart';
+import 'afastamento_screen.dart';
 import 'configurations_screen.dart';
 import 'militares_screen.dart';
 
@@ -21,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
     FilaScreen(),
     RodadaScreen(),
     MilitaresScreen(),
-    AfastamentosScreen(),
+    AfastamentoScreen(),
   ];
 
   @override
@@ -67,15 +68,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class AfastamentosScreen extends StatelessWidget{
-  const AfastamentosScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold();
-  }
-}
 
 
 

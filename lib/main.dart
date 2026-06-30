@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sistema_escalas_front/screens/home_screen.dart';
 import 'widgets/app_theme.dart';
 
@@ -15,6 +16,14 @@ class EscalaExtraApp extends StatelessWidget {
       title: 'Escalas Extras',
       theme: AppTheme.theme,
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
+      supportedLocales: [
+        const Locale('pt', 'BR'),
+      ],
       home: const HomeScreen(),
     );
   }

@@ -8,10 +8,16 @@ class RodadaService {
   static Future<List<Rodada>> listar() async {
     final data = await ApiService.get('/rodada');
     return (data as List).map((j) => Rodada.fromJson(j)).toList();
+
+    return [
+      Rodada(id: '1', data: DateTime(2026,06,30)),
+      Rodada(id: '2', data: DateTime(2026,07,05)),
+      Rodada(id: '3', data: DateTime(2026,07,12)),
+    ];
   }
 
   static Future<void> criar(DateTime data) async {
     final body = {'data': data.toIso8601String().split('T').first};
-    await ApiService.post('/rodada', body);
+    await ApiService.post('/rodada', null, body);
   }
 }

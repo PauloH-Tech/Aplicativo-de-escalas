@@ -51,9 +51,10 @@ class _RodadaScreenState extends State<RodadaScreen> {
       initialDate: DateTime.now(),
       firstDate: DateTime(2024),
       lastDate: DateTime(2030),
+      locale: Locale('pt', 'BR'),
       helpText: 'Selecione a data da escala',
       confirmText: 'Criar rodada',
-      cancelText: 'Cancelar',
+      // cancelText: 'Cancelar',
     );
     if (data == null) return;
 

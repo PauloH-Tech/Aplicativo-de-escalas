@@ -24,12 +24,21 @@ class ApiService {
     return _handle(response);
   }
 
-  static Future<dynamic> post(String path, Map<String, dynamic> body) async {
-    final res = await http.post(
-      Uri.parse('$_baseUrl$path'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body),
-    );
+  static Future<dynamic> post(String path, String? id, Map<String, dynamic> body) async {
+    final http.Response res;
+    if (id == null){
+      res = await http.post(
+        Uri.parse('$_baseUrl$path'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+    } else {
+       res = await http.post(
+        Uri.parse('$_baseUrl$path/$id'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+    }
     return _handle(res);
   }
 
