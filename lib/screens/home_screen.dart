@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 
+import 'fila_screen.dart';
 import 'rodada_screen.dart';
 import 'afastamento_screen.dart';
 import 'configurations_screen.dart';
@@ -65,19 +66,5 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
-  }
-}
-
-
-
-
-
-class FilaScreen extends StatelessWidget{
-  const FilaScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold();
   }
 }

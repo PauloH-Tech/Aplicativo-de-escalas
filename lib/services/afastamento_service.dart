@@ -42,6 +42,6 @@ class AfastamentoService {
   static Future<void> cadastrar(Afastamento afastamento) async {
     final idMilitar = afastamento.militar.id;
     final body = afastamento.toJson();
-    await ApiService.post('/afastamento', idMilitar, body);
+    await ApiService.post('/afastamento', body, idMilitar);
   }
 }

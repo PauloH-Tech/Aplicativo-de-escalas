@@ -24,8 +24,9 @@ class ApiService {
     return _handle(response);
   }
 
-  static Future<dynamic> post(String path, String? id, Map<String, dynamic> body) async {
+  static Future<dynamic> post(String path, Map<String, dynamic> body, String? id) async {
     final http.Response res;
+    print(body);
     if (id == null){
       res = await http.post(
         Uri.parse('$_baseUrl$path'),

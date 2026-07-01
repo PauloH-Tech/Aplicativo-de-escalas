@@ -7,18 +7,24 @@ class MilitarService {
     return (data as List).map((j) => Militar.fromJson(j)).toList();
 
     return [
-      Militar(id: '1',
-          nome: 'DOS SANTOS',
-          stAtivo: true,
-          graduacao: Graduacao.segundoSargento),
-      Militar(id: '2',
-          nome: 'TEIXEIRA',
-          stAtivo: true,
-          graduacao: Graduacao.cabo),
-      Militar(id: '3',
-          nome: 'JULIANA',
-          stAtivo: true,
-          graduacao: Graduacao.cabo),
+      Militar(
+        id: '1',
+        nome: 'DOS SANTOS',
+        stAtivo: true,
+        graduacao: Graduacao.segundoSargento,
+      ),
+      Militar(
+        id: '2',
+        nome: 'TEIXEIRA',
+        stAtivo: true,
+        graduacao: Graduacao.cabo,
+      ),
+      Militar(
+        id: '3',
+        nome: 'JULIANA',
+        stAtivo: true,
+        graduacao: Graduacao.cabo,
+      ),
     ];
   }
 
@@ -26,12 +32,19 @@ class MilitarService {
     required String nome,
     required Graduacao graduacao,
     required bool ativo,
-  }) async {}
+  }) async {
+    var body = {'nome': nome, 'stAtivo': ativo, 'graduacao': graduacao.value};
+
+    await ApiService.post('/militar', body, null);
+  }
 
   static Future<void> editar({
     required String id,
     required String nome,
     required Graduacao graduacao,
     required bool ativo,
-  }) async {}
+  }) async {
+    var body = {'nome': nome, 'stAtivo': ativo, 'graduacao': graduacao.value};
+    await ApiService.post('/militar', body, id);
+  }
 }
