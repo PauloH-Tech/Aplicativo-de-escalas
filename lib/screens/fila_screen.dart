@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sistema_escalas_front/models/Rodada.dart';
-import 'package:sistema_escalas_front/models/escala_extra.dart';
 import 'package:sistema_escalas_front/models/escala_extra_request.dart';
 import 'package:sistema_escalas_front/models/militar.dart';
-import 'package:sistema_escalas_front/services/militar_service.dart';
+import 'package:sistema_escalas_front/services/escala_service.dart';
 import 'package:sistema_escalas_front/services/rodada_service.dart';
 import 'package:sistema_escalas_front/widgets/feedback_views.dart';
-import 'package:sistema_escalas_front/services/escala_service.dart';
 
+import '../models/militar_fila.dart';
 import '../widgets/app_theme.dart';
 import '../widgets/posto_badge.dart';
 
@@ -20,7 +19,8 @@ class FilaScreen extends StatefulWidget {
 }
 
 class _FilaScreenState extends State<FilaScreen> {
-  List<Militar> _fila = [];
+  List<MilitarFila> _fila = [];
+  // final Map<String, int> _posicoesDisponiveis = {};
   List<Rodada> _rodadas = [];
   Rodada? _rodadaSelecionada;
   final Set<String> _selecionados = {};
@@ -40,10 +40,13 @@ class _FilaScreenState extends State<FilaScreen> {
       _erro = null;
     });
     try {
-      final rodadas = await RodadaService.listar();
+      final rodadas = await RodadaService.proximasRodada();
 
       setState(() {
         _rodadas = rodadas;
+        _rodadaSelecionada = null;
+        _fila.clear();
+        _selecionados.clear();
         _loanding = false;
       });
     } catch (e) {
@@ -62,11 +65,18 @@ class _FilaScreenState extends State<FilaScreen> {
     });
     try {
       final fila = await EscalaService.listaOrdenada(rodada.data);
-
       setState(() {
         _fila = fila;
         _rodadaSelecionada = rodada;
         _loanding = false;
+
+        // _posicoesDisponiveis.clear();
+        // int posicaoDisponivel = 1;
+        // for (final militar in _fila) {
+        //   if (militar.tpAfastamento == null) {
+        //     _posicoesDisponiveis[militar.id] = posicaoDisponivel++;
+        //   }
+        // }
       });
     } catch (e) {
       setState(() {
@@ -81,38 +91,44 @@ class _FilaScreenState extends State<FilaScreen> {
 
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (ctx) =>
-          AlertDialog(
-            title: const Text('Confirmar escala'),
-            content: Text(
-              '${_selecionados
-                  .length} militar(res) serão escalados na rodada do dia ${_fmt.format(_rodadaSelecionada!
-                  .data)}.\n\nDeseja confirmar?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('Cancelar'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, true),
-                child: const Text('Confirmar'),
-              ),
-            ],
+      builder: (ctx) => AlertDialog(
+        title: const Text('Confirmar escala'),
+        content: Text(
+          '${_selecionados.length} militar(res) serão escalados na rodada do dia ${_fmt.format(_rodadaSelecionada!.data)}.\n\nDeseja confirmar?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancelar'),
           ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Confirmar'),
+          ),
+        ],
+      ),
     );
     if (confirm != true) return;
 
     try {
-      await EscalaService.escalarMilitares(escalados: EscalaExtraRequest(militarIds: _selecionados.toList(), rodadaId: _rodadaSelecionada!.id));
+      await EscalaService.escalarMilitares(
+        escalados: EscalaExtraRequest(
+          militarIds: _selecionados.toList(),
+          rodadaId: _rodadaSelecionada!.id,
+        ),
+      );
       setState(() => _selecionados.clear());
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Escala registrada com sucesso!'),
-        backgroundColor: AppTheme.success,),);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Escala registrada com sucesso!'),
+          backgroundColor: AppTheme.success,
+        ),
+      );
       _carregarRodadas();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Erro: $e'), backgroundColor: AppTheme.danger,));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro: $e'), backgroundColor: AppTheme.danger),
+      );
     }
   }
 
@@ -152,12 +168,11 @@ class _FilaScreenState extends State<FilaScreen> {
                   ),
                   items: _rodadas
                       .map(
-                        (r) =>
-                        DropdownMenuItem(
+                        (r) => DropdownMenuItem(
                           value: r,
                           child: Text(_fmt.format(r.data)),
                         ),
-                  )
+                      )
                       .toList(),
                   onChanged: (r) {
                     if (r != null) {
@@ -174,37 +189,40 @@ class _FilaScreenState extends State<FilaScreen> {
         Expanded(
           child: _rodadaSelecionada == null
               ? Center(
-            child: const Text(
-              'Selecione uma rodada para visualizar a fila',
-            ),
-          )
+                  child: const Text(
+                    'Selecione uma rodada para visualizar a fila',
+                  ),
+                )
               : _fila.isEmpty
               ? const EmptyView(
-            message: 'Nenhum militar disponível',
-            icon: Icons.people_outline,
-          )
+                  message: 'Nenhum militar disponível',
+                  icon: Icons.people_outline,
+                )
               : ListView.builder(
-            itemCount: _fila.length,
-            itemBuilder: (ctx, i) {
-              final m = _fila[i];
-              final sel = _selecionados.contains(m.id);
-              return _MilitarFilaCard(
-                militar: m,
-                posicao: i + 1,
-                selecionado: sel,
-                rodadaSelecionada: true,
-                onTap: () {
-                  setState(() {
-                    if (sel) {
-                      _selecionados.remove(m.id);
-                    } else {
-                      _selecionados.add(m.id);
-                    }
-                  });
-                },
-              );
-            },
-          ),
+                  itemCount: _fila.length,
+                  itemBuilder: (ctx, i) {
+                    final m = _fila[i];
+                    final sel = _selecionados.contains(m.id);
+                    final bool podeEscalar = m.tpAfastamento == null;
+                    return _MilitarFilaCard(
+                      militarFila: m,
+                      // posicao: _posicoesDisponiveis[m.id],
+                      posicao: i + 1,
+                      selecionado: sel,
+                      rodadaSelecionada: true,
+                      podeEscalar: podeEscalar,
+                      onTap: () {
+                        setState(() {
+                          if (sel) {
+                            _selecionados.remove(m.id);
+                          } else {
+                            _selecionados.add(m.id);
+                          }
+                        });
+                      },
+                    );
+                  },
+                ),
         ),
 
         if (_selecionados.isNotEmpty)
@@ -224,78 +242,100 @@ class _FilaScreenState extends State<FilaScreen> {
 }
 
 class _MilitarFilaCard extends StatelessWidget {
-  final Militar militar;
+  final MilitarFila militarFila;
   final int posicao;
   final bool selecionado;
   final bool rodadaSelecionada;
   final VoidCallback onTap;
+  final bool podeEscalar;
 
   const _MilitarFilaCard({
     super.key,
-    required this.militar,
+    required this.militarFila,
     required this.posicao,
     required this.selecionado,
     required this.rodadaSelecionada,
+    required this.podeEscalar,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(
-          color: selecionado ? AppTheme.primary : AppTheme.border,
-          width: selecionado ? 2 : 1,
+    return Opacity(
+      opacity: podeEscalar ? 1 : 0.55,
+      child: Card(
+        color: podeEscalar ? Colors.white : Colors.grey.shade100,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(
+            color: selecionado ? AppTheme.primary : AppTheme.border,
+            width: selecionado ? 2 : 1,
+          ),
         ),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          child: Row(
-            children: [
-              PostoBadge(posicao),
-              const SizedBox(width: 12),
-              CircleAvatar(
-                radius: 18,
-                backgroundColor: AppTheme.primary.withOpacity(0.1),
-                child: Text(
-                  militar.nome.substring(0, 2),
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.primary,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      militar.nome,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                      ),
+        child: InkWell(
+          onTap: podeEscalar ? onTap : null,
+          borderRadius: BorderRadius.circular(10),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Row(
+              children: [
+                // TODO: fazer uma abordagem onde o top 3 não considere o afastamentos
+                // if (posicao != null) ...[
+                //   PostoBadge(posicao!),
+                //   const SizedBox(width: 12),
+                // ] else ...[
+                //   const SizedBox(width: 44),
+                // ],
+                PostoBadge(posicao),
+                const SizedBox(width: 12),
+                CircleAvatar(
+                  radius: 18,
+                  backgroundColor: AppTheme.primary.withOpacity(0.1),
+                  child: Text(
+                    militarFila.nome.substring(0, 2),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.primary,
                     ),
-                    const SizedBox(height: 2),
-                  ],
-                ),
-              ),
-              if (rodadaSelecionada)
-                Checkbox(
-                  value: selecionado,
-                  onChanged: (_) => onTap(),
-                  activeColor: AppTheme.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
                   ),
                 ),
-            ],
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        militarFila.nome,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                      if (militarFila.tpAfastamento != null)
+                        Text(
+                          militarFila.tpAfastamento!.label,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      const SizedBox(height: 2),
+                    ],
+                  ),
+                ),
+                if (rodadaSelecionada)
+                  Checkbox(
+                    value: selecionado,
+                    onChanged: podeEscalar ? (_) => onTap() : null,
+                    activeColor: AppTheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

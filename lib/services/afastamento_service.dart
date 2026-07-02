@@ -6,7 +6,7 @@ import 'api_service.dart';
 class AfastamentoService {
   //deve receber o nome do policial ao inves do id
   static Future<List<Afastamento>> listar() async {
-    final data = await ApiService.get('/afastamento');
+    final data = await ApiService.get('/afastamento', null);
     // print(data.toString());
     return (data as List).map((j) => Afastamento.fromjson(j)).toList();
 

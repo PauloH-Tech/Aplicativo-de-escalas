@@ -5,6 +5,9 @@ class AppTheme {
   static const primary = Color(0xFF1A3A5C);
   static const primaryLight = Color(0xFF25527F);
   static const accent = Color(0xFFE8A020);
+  static const gold = Color(0xFFFFD700);
+  static const silver = Color(0xFFC0C0C0);
+  static const bronze = Color(0xFFCD7F32);
   static const danger = Color(0xFFC0392B);
   static const success = Color(0xFF27664A);
   static const surface = Color(0xFFF4F5F7);

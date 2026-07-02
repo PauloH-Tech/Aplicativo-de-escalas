@@ -32,7 +32,7 @@ class _RodadaScreenState extends State<RodadaScreen> {
       _erro = null;
     });
     try {
-      final lista = await RodadaService.listar();
+      final lista = await RodadaService.listarTodas();
       setState(() {
         _rodadas = lista;
         _loanding = false;

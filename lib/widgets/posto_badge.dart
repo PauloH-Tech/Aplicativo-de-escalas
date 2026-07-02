@@ -11,11 +11,19 @@ class PostoBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isFirst = posicao == 1;
+    final isSecond = posicao == 2;
+    final isThird = posicao == 3;
     return Container(
       width: 32,
       height: 32,
       decoration: BoxDecoration(
-        color: isFirst ? AppTheme.accent : AppTheme.primary.withOpacity(0.08),
+        color: isFirst
+            ? AppTheme.gold
+            : isSecond
+            ? AppTheme.silver
+            : isThird
+            ? AppTheme.bronze
+            : AppTheme.primary.withOpacity(0.08),
         shape: BoxShape.circle,
       ),
       child: Center(
