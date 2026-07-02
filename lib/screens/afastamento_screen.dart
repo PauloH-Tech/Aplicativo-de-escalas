@@ -207,7 +207,7 @@ class _FormularioAfastamentoState extends State<_FormularioAfastamento> {
   Future<void> _escolherPeriodo() async {
     final range = await showDateRangePicker(
       context: context,
-      initialEntryMode: DatePickerEntryMode.input,
+      // initialEntryMode: DatePickerEntryMode.input,
       locale: const Locale('pt', 'BR') ,
       firstDate: DateTime(2024),
       lastDate: DateTime(2030),

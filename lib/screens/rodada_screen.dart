@@ -104,10 +104,10 @@ class _RodadaScreenState extends State<RodadaScreen> {
                 //   // ),
                 //   child: Icon(Icons.calendar_today_outlined),
                 // ),
-                title: Text('Rodada #${r.id}',
+                title: Text('Rodada ${_fmt.format(r.data)}',
                 style: const TextStyle(
                   fontWeight: FontWeight.w600)),
-                subtitle: Text(_fmt.format(r.data)),
+                subtitle: Text('1 militar(res) escalados (exemplo)'),
                 trailing: const Icon(Icons.chevron_right, color: AppTheme.textSecondary,),
               ),
             );

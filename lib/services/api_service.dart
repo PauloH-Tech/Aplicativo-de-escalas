@@ -38,8 +38,11 @@ class ApiService {
     return _handle(res);
   }
 
-  static Future<dynamic> post(String path, Map<String, dynamic> body,
-      dynamic pathVariable) async {
+  static Future<dynamic> post(
+    String path,
+    Map<String, dynamic> body,
+    dynamic pathVariable,
+  ) async {
     final http.Response res;
     // print(body);
     if (pathVariable == null) {
@@ -58,7 +61,11 @@ class ApiService {
     return _handle(res);
   }
 
-  static Future<dynamic> put(String path, Map<String, dynamic> body, dynamic pathVariable) async {
+  static Future<dynamic> put(
+    String path,
+    Map<String, dynamic> body,
+    dynamic pathVariable,
+  ) async {
     final http.Response res;
     if (pathVariable == null) {
       res = await http.put(
@@ -85,15 +92,12 @@ class ApiService {
       if (res.body.isEmpty) return null;
       return jsonDecode(utf8.decode(res.bodyBytes));
     }
+    ErroResposta erro;
     try {
-      final erro = ErroResposta.fromJson(
-          jsonDecode(utf8.decode(res.bodyBytes)));
-      throw ApiException(
-        erro.status,
-        erro.mensagem
-      );
+      erro = ErroResposta.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
     } catch (_) {
       throw ApiException(res.statusCode, 'Erro desconhecido');
     }
+    throw ApiException(erro.status, erro.mensagem);
   }
 }
