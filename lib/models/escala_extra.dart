@@ -1,14 +1,20 @@
+import 'Rodada.dart';
+import 'militar.dart';
+
 class EscalaExtra {
   final String? id;
-  final String militarId;
-  final String rodadaId;
+  final Militar militar;
+  // final Rodada rodada;
 
-  EscalaExtra({this.id, required this.militarId, required this.rodadaId});
+  EscalaExtra({this.id, required this.militar});
+
+  factory EscalaExtra.fromJson(Map<String, dynamic> j) => EscalaExtra(
+      id: j['id'],
+      militar: Militar.fromJson(j['militar'])
+  );
 
   Map<String, dynamic> toJson() => {
-    'militarId': militarId,
-    'rodadaId': rodadaId,
+    'militar': militar.toJson(),
   };
-
 
 }

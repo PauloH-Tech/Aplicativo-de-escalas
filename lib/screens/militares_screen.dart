@@ -96,7 +96,6 @@ class _MilitaresScreenState extends State<MilitaresScreen> {
                         ),
                         onPressed: () => _abrirFormulario(m),
                       ),
-                      onTap: () => _abrirFormulario(m),
                     ),
                   );
                 },

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sistema_escalas_front/screens/home_screen.dart';
+import 'config/app_config.dart';
 import 'widgets/app_theme.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await AppConfig.init();
+
   runApp(const EscalaExtraApp());
 }
 

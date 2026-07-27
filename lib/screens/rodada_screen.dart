@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sistema_escalas_front/screens/detalhes_rodada_screen.dart';
 import 'package:sistema_escalas_front/widgets/feedback_views.dart';
 
 import '../models/Rodada.dart';
@@ -18,7 +19,6 @@ class _RodadaScreenState extends State<RodadaScreen> {
   bool _loanding = true;
   String? _erro;
   final _fmt = DateFormat('dd/MM/yyyy');
-
 
   @override
   void initState() {
@@ -71,9 +71,8 @@ class _RodadaScreenState extends State<RodadaScreen> {
     } catch (e) {
       // print(e.toString());
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Erro: $e'),
-            backgroundColor: AppTheme.danger,));
+        SnackBar(content: Text('Erro: $e'), backgroundColor: AppTheme.danger),
+      );
     }
   }
 
@@ -84,46 +83,68 @@ class _RodadaScreenState extends State<RodadaScreen> {
 
     return Stack(
       children: [
-        _rodadas.isEmpty ? const EmptyView(message: 'Nenhuma rodada cadastrada',
-          icon: Icons.calendar_today_outlined) : ListView.builder(
-          padding: const EdgeInsets.only(top: 8, bottom: 80),
-          itemCount: _rodadas.length,
-          itemBuilder: (ctx, i) {
-            final r = _rodadas[i];
-            return Card(
-              child: ListTile(
-                // leading: CircleAvatar(
-                //   // backgroundColor: AppTheme.primary,
-                //   // child: Text(
-                //   //   '#${r.data}',
-                //   //   style: const TextStyle(
-                //   //     color: Colors.white,
-                //   //     fontSize: 12,
-                //   //     fontWeight: FontWeight.bold,
-                //   //   ),
-                //   // ),
-                //   child: Icon(Icons.calendar_today_outlined),
-                // ),
-                title: Text('Rodada ${_fmt.format(r.data)}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600)),
-                subtitle: Text('1 militar(res) escalados (exemplo)'),
-                trailing: const Icon(Icons.chevron_right, color: AppTheme.textSecondary,),
+        _rodadas.isEmpty
+            ? const EmptyView(
+                message: 'Nenhuma rodada cadastrada',
+                icon: Icons.calendar_today_outlined,
+              )
+            : ListView.builder(
+                padding: const EdgeInsets.only(top: 8, bottom: 80),
+                itemCount: _rodadas.length,
+                itemBuilder: (ctx, i) {
+                  final r = _rodadas[i];
+                  return Card(
+                    child: ListTile(
+                      // leading: CircleAvatar(
+                      //   // backgroundColor: AppTheme.primary,
+                      //   // child: Text(
+                      //   //   '#${r.data}',
+                      //   //   style: const TextStyle(
+                      //   //     color: Colors.white,
+                      //   //     fontSize: 12,
+                      //   //     fontWeight: FontWeight.bold,
+                      //   //   ),
+                      //   // ),
+                      //   child: Icon(Icons.calendar_today_outlined),
+                      // ),
+                      title: Text(
+                        'Rodada ${_fmt.format(r.data)}',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      subtitle: r.escalados.isEmpty
+                          ? Text('Nenhum militar escalado')
+                          : r.escalados.length == 1
+                          ? Text('${r.escalados.length} militar escalado')
+                          : Text('${r.escalados.length} militares escalados'),
+                      trailing: r.escalados.isNotEmpty
+                          ? IconButton(
+                              onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => DetalhesRodadaScreen(
+                                    escalados: r.escalados,
+                                  ),
+                                ),
+                              ),
+                              icon: Icon(Icons.chevron_right),
+                              color: AppTheme.textSecondary,
+                            )
+                          : null,
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
         Positioned(
-            bottom: 20,
-            right: 16,
-            child: FloatingActionButton.extended(
-              onPressed: _criarRodada,
-              backgroundColor: AppTheme.primary,
-              foregroundColor: Colors.white,
-              icon: const Icon(Icons.add),
-              label: const Text('Nova Rodada'),
-            ),
-        )
+          bottom: 20,
+          right: 16,
+          child: FloatingActionButton.extended(
+            onPressed: _criarRodada,
+            backgroundColor: AppTheme.primary,
+            foregroundColor: Colors.white,
+            icon: const Icon(Icons.add),
+            label: const Text('Nova Rodada'),
+          ),
+        ),
       ],
     );
   }

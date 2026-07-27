@@ -5,7 +5,7 @@ class MilitarFila {
   final String id;
   final String nome;
   final Graduacao graduacao;
-  final DateTime dtUltimaEscala;
+  final DateTime? dtUltimaEscala;
   final TipoAfastamento? tpAfastamento;
   final int qtEscalas;
 
@@ -23,7 +23,7 @@ class MilitarFila {
         id: j['idMilitar'],
         nome: j['nome'],
         graduacao: Graduacao.fromString(j['graduacao']),
-        dtUltimaEscala: DateTime.parse(j['dtUltimaEscala']),
+        dtUltimaEscala: j['dtUltimaEscala'] != null ? DateTime.parse(j['dtUltimaEscala']) : null,
         tpAfastamento: j['tpAfastamento'] != null ? TipoAfastamento.fromString(j['tpAfastamento']) : null,
         qtEscalas: j['qtEscalas']);
   }

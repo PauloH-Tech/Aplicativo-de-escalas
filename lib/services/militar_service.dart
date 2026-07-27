@@ -3,8 +3,8 @@ import 'package:sistema_escalas_front/services/api_service.dart';
 
 class MilitarService {
   static Future<List<Militar>> listarTodos() async {
-    final data = await ApiService.get('/militar', null);
-    return (data as List).map((j) => Militar.fromJson(j)).toList();
+    // final data = await ApiService.get('/militar', null);
+    // return (data as List).map((j) => Militar.fromJson(j)).toList();
 
     return [
       Militar(

@@ -168,7 +168,7 @@ class _AfastamentoScreenState extends State<AfastamentoScreen> {
             backgroundColor: AppTheme.primary,
             foregroundColor: Colors.white,
             icon: const Icon(Icons.add),
-            label: const Text('Novo Afastament'),
+            label: const Text('Novo Afastamento'),
           ),
         ),
       ],

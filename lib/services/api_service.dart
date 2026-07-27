@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:sistema_escalas_front/config/app_config.dart';
 import 'package:sistema_escalas_front/utils/erro_resposta.dart';
 
 class ApiException implements Exception {
@@ -14,26 +15,32 @@ class ApiException implements Exception {
 }
 
 class ApiService {
-  static final String _baseUrl = 'http://127.0.0.1:8082';
+  //url localhost
+  // static final String _baseUrl = 'http://127.0.0.1:8082';
 
+  //url localhost devices
   // static final String _baseUrl = 'http://192.168.1.6:8082';
 
+  //url produção
+  // static final String _baseUrl = 'http://54.207.44.155:8080';
+
+
   static Future<dynamic> get(String path, dynamic pathVariable) async {
-    // print(pathVariable);
     final http.Response res;
     if (pathVariable == null) {
       res = await http.get(
-        Uri.parse('$_baseUrl$path'),
+        Uri.parse('${AppConfig.apiUrl}$path'),
         headers: {'Content-Type': 'application/json'},
-      );
+      )/*.timeout(Duration(seconds: 5))*/;
     } else {
       res = await http.get(
-        Uri.parse('$_baseUrl$path/$pathVariable'),
+        Uri.parse('${AppConfig.apiUrl}$path/$pathVariable'),
         headers: {'Content-Type': 'application/json'},
-      );
+      )/*.timeout(Duration(seconds: 5))*/;
     }
     // print(res.statusCode);
     // print(res.body);
+    // print(res.request?.url);
 
     return _handle(res);
   }
@@ -47,13 +54,13 @@ class ApiService {
     // print(body);
     if (pathVariable == null) {
       res = await http.post(
-        Uri.parse('$_baseUrl$path'),
+        Uri.parse('${AppConfig.apiUrl}$path'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
     } else {
       res = await http.post(
-        Uri.parse('$_baseUrl$path/$pathVariable'),
+        Uri.parse('${AppConfig.apiUrl}$path/$pathVariable'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
@@ -69,13 +76,13 @@ class ApiService {
     final http.Response res;
     if (pathVariable == null) {
       res = await http.put(
-        Uri.parse('$_baseUrl$path'),
+        Uri.parse('${AppConfig.apiUrl}$path'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
     } else {
       res = await http.put(
-        Uri.parse('$_baseUrl$path/$pathVariable'),
+        Uri.parse('${AppConfig.apiUrl}$path/$pathVariable'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
