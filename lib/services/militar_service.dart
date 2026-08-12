@@ -3,29 +3,29 @@ import 'package:sistema_escalas_front/services/api_service.dart';
 
 class MilitarService {
   static Future<List<Militar>> listarTodos() async {
-    // final data = await ApiService.get('/militar', null);
-    // return (data as List).map((j) => Militar.fromJson(j)).toList();
+    final data = await ApiService.get('/militar', null);
+    return (data as List).map((j) => Militar.fromJson(j)).toList();
 
-    return [
-      Militar(
-        id: '1',
-        nome: 'DOS SANTOS',
-        stAtivo: true,
-        graduacao: Graduacao.segundoSargento,
-      ),
-      Militar(
-        id: '2',
-        nome: 'TEIXEIRA',
-        stAtivo: true,
-        graduacao: Graduacao.cabo,
-      ),
-      Militar(
-        id: '3',
-        nome: 'JULIANA',
-        stAtivo: true,
-        graduacao: Graduacao.cabo,
-      ),
-    ];
+    // return [
+    //   Militar(
+    //     id: '1',
+    //     nome: 'DOS SANTOS',
+    //     stAtivo: true,
+    //     graduacao: Graduacao.segundoSargento,
+    //   ),
+    //   Militar(
+    //     id: '2',
+    //     nome: 'TEIXEIRA',
+    //     stAtivo: true,
+    //     graduacao: Graduacao.cabo,
+    //   ),
+    //   Militar(
+    //     id: '3',
+    //     nome: 'JULIANA',
+    //     stAtivo: true,
+    //     graduacao: Graduacao.cabo,
+    //   ),
+    // ];
   }
 
   static Future<void> criar({

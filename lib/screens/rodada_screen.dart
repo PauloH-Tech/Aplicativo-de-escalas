@@ -85,6 +85,7 @@ class _RodadaScreenState extends State<RodadaScreen> {
       children: [
         _rodadas.isEmpty
             ? const EmptyView(
+
                 message: 'Nenhuma rodada cadastrada',
                 icon: Icons.calendar_today_outlined,
               )
