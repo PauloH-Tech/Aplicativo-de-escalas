@@ -6,7 +6,7 @@ import '../models/Rodada.dart';
 
 class RodadaService {
   static Future<List<Rodada>> listarTodas() async {
-    final data = await ApiService.get('/rodada', null);
+    final data = await ApiService.get('/rodada');
     return (data as List).map((j) => Rodada.fromJson(j)).toList();
 
     // return [
@@ -17,12 +17,16 @@ class RodadaService {
   }
 
   static Future<List<Rodada>> proximasRodada() async {
-    final data = await ApiService.get('/rodada/proximas', null);
+    final data = await ApiService.get('/rodada/proximas');
     return (data as List).map((j) => Rodada.fromJson(j)).toList();
   }
 
-  static Future<void> criar(DateTime data) async {
-    final body = {'data': data.toIso8601String().split('T').first};
-    await ApiService.post('/rodada', body, null);
+  static Future<void> criar({required DateTime date}) async {
+    final body = {'data': date.toIso8601String().split('T').first};
+    await ApiService.post('/rodada', body);
+  }
+
+  static Future<void> deletar({required String id}) async {
+    await ApiService.delete('militar/$id');
   }
 }

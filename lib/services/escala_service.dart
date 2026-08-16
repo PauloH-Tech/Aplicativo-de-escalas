@@ -4,13 +4,12 @@ import 'package:sistema_escalas_front/services/api_service.dart';
 import '../models/militar_fila.dart';
 
 class EscalaService {
-  static Future<List<MilitarFila>> listaOrdenada(DateTime date) async {
+  static Future<List<MilitarFila>> listaOrdenada({required DateTime date}) async {
     var dataFormatada = date.toIso8601String().split('T').first;
     // print(dataFormatada);
-    var data = await ApiService.get('/escala', dataFormatada);
+    var data = await ApiService.get('/escala/$dataFormatada');
     // print(data);
     return (data as List).map((j) => MilitarFila.fromJson(j)).toList();
-
 
     // return [
     //   Militar(
@@ -35,10 +34,14 @@ class EscalaService {
   }
 
   static Future<void> escalarMilitares({
-    required EscalaExtraRequest escalados
+    required EscalaExtraRequest escalados,
   }) async {
     var body = escalados.toJson();
     // print(body);
-    await ApiService.post('/escala', body, null);
+    await ApiService.post('/escala', body);
+  }
+
+  static Future<void> deletar({required String id}) async {
+    await ApiService.delete('/escala/$id');
   }
 }

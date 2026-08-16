@@ -60,7 +60,7 @@ class _RodadaScreenState extends State<RodadaScreen> {
 
     try {
       // print(data);
-      await RodadaService.criar(data);
+      await RodadaService.criar(date: data);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Rodada criada com sucesso!'),

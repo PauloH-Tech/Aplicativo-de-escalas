@@ -3,7 +3,7 @@ import 'package:sistema_escalas_front/services/api_service.dart';
 
 class MilitarService {
   static Future<List<Militar>> listarTodos() async {
-    final data = await ApiService.get('/militar', null);
+    final data = await ApiService.get('/militar');
     return (data as List).map((j) => Militar.fromJson(j)).toList();
 
     // return [
@@ -34,8 +34,7 @@ class MilitarService {
     required bool ativo,
   }) async {
     var body = {'nome': nome, 'stAtivo': ativo, 'graduacao': graduacao.value};
-
-    await ApiService.post('/militar', body, null);
+    await ApiService.post('/militar', body);
   }
 
   static Future<void> editar({
@@ -45,6 +44,10 @@ class MilitarService {
     required bool ativo,
   }) async {
     var body = {'nome': nome, 'stAtivo': ativo, 'graduacao': graduacao.value};
-    await ApiService.put('/militar', body, id);
+    await ApiService.put('/militar/$id', body);
+  }
+
+  static Future<void> deletar({required String id}) async {
+    await ApiService.delete('/militar/$id');
   }
 }

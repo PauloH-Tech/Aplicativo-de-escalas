@@ -64,7 +64,7 @@ class _FilaScreenState extends State<FilaScreen> {
       _selecionados.clear();
     });
     try {
-      final fila = await EscalaService.listaOrdenada(rodada.data);
+      final fila = await EscalaService.listaOrdenada(date: rodada.data);
       setState(() {
         _fila = fila;
         _rodadaSelecionada = rodada;

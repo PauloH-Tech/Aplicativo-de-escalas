@@ -24,73 +24,46 @@ class ApiService {
   //url produção
   // static final String _baseUrl = 'http://54.207.44.155:8080';
 
-
-  static Future<dynamic> get(String path, dynamic pathVariable) async {
+  static Future<dynamic> get(String path) async {
     final http.Response res;
-    if (pathVariable == null) {
-      res = await http.get(
-        Uri.parse('${AppConfig.apiUrl}$path'),
-        headers: {'Content-Type': 'application/json'},
-      )/*.timeout(Duration(seconds: 5))*/;
-    } else {
-      res = await http.get(
-        Uri.parse('${AppConfig.apiUrl}$path/$pathVariable'),
-        headers: {'Content-Type': 'application/json'},
-      )/*.timeout(Duration(seconds: 5))*/;
-    }
-    // print(res.statusCode);
-    // print(res.body);
-    // print(res.request?.url);
-
+    res = await http.get(
+      Uri.parse('${AppConfig.apiUrl}$path'),
+      headers: {'Content-Type': 'application/json'},
+    );
     return _handle(res);
   }
 
-  static Future<dynamic> post(
-    String path,
-    Map<String, dynamic> body,
-    dynamic pathVariable,
-  ) async {
+  static Future<dynamic> post(String path, Map<String, dynamic> body) async {
     final http.Response res;
     // print(body);
-    if (pathVariable == null) {
-      res = await http.post(
-        Uri.parse('${AppConfig.apiUrl}$path'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(body),
-      );
-    } else {
-      res = await http.post(
-        Uri.parse('${AppConfig.apiUrl}$path/$pathVariable'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(body),
-      );
-    }
+    res = await http.post(
+      Uri.parse('${AppConfig.apiUrl}$path'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
     return _handle(res);
   }
 
-  static Future<dynamic> put(
-    String path,
-    Map<String, dynamic> body,
-    dynamic pathVariable,
-  ) async {
+  static Future<dynamic> put(String path, Map<String, dynamic> body) async {
     final http.Response res;
-    if (pathVariable == null) {
-      res = await http.put(
-        Uri.parse('${AppConfig.apiUrl}$path'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(body),
-      );
-    } else {
-      res = await http.put(
-        Uri.parse('${AppConfig.apiUrl}$path/$pathVariable'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(body),
-      );
-    }
+    res = await http.put(
+      Uri.parse('${AppConfig.apiUrl}$path'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
     return _handle(res);
   }
 
-  static Future<dynamic> delete(String path) async {}
+  static Future<dynamic> delete(String path) async {
+    final http.Response res;
+    res = await http.delete(
+      Uri.parse('${AppConfig.apiUrl}$path'),
+      headers: {'Content-Type': 'application/json'},
+    );
+    return _handle(res);
+  }
 
   static dynamic _handle(http.Response res) {
     // print(res.statusCode);

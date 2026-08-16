@@ -208,7 +208,7 @@ class _FormularioAfastamentoState extends State<_FormularioAfastamento> {
     final range = await showDateRangePicker(
       context: context,
       // initialEntryMode: DatePickerEntryMode.input,
-      locale: const Locale('pt', 'BR') ,
+      locale: const Locale('pt', 'BR'),
       firstDate: DateTime(2024),
       lastDate: DateTime(2030),
       helpText: 'Selecione o período do afastamento',
@@ -231,7 +231,7 @@ class _FormularioAfastamentoState extends State<_FormularioAfastamento> {
     }
     setState(() => _salvando = true);
     try {
-      await AfastamentoService.cadastrar(
+      await AfastamentoService.cadastrar(afastamento:
         Afastamento(
           militar: _militarSelecionado!,
           inicio: _inicio!,

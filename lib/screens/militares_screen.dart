@@ -39,6 +39,11 @@ class _MilitaresScreenState extends State<MilitaresScreen> {
       });
     }
   }
+  
+  Future<void> _deletar() async {
+    
+  }
+  
 
   void _abrirFormulario([Militar? militar]) {
     showModalBottomSheet(
@@ -70,33 +75,33 @@ class _MilitaresScreenState extends State<MilitaresScreen> {
                 itemBuilder: (ctx, i) {
                   final m = _militares[i];
                   return Card(
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: AppTheme.primary.withOpacity(0.1),
-                        child: Text(
-                          m.nome.substring(0, 2).toUpperCase(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.primary,
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: AppTheme.primary.withOpacity(0.1),
+                          child: Text(
+                            m.nome.substring(0, 2).toUpperCase(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.primary,
+                            ),
                           ),
                         ),
-                      ),
-                      title: Text(
-                        m.nome,
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      subtitle: Text(
-                        m.graduacao.label,
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(
-                          Icons.edit,
-                          color: AppTheme.textSecondary,
+                        title: Text(
+                          m.nome,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
-                        onPressed: () => _abrirFormulario(m),
+                        subtitle: Text(
+                          m.graduacao.label,
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(
+                            Icons.edit,
+                            color: AppTheme.textSecondary,
+                          ),
+                          onPressed: () => _abrirFormulario(m),
+                        ),
                       ),
-                    ),
                   );
                 },
               ),
