@@ -159,7 +159,7 @@ class _FilaScreenState extends State<FilaScreen> {
               Expanded(
                 child: DropdownButtonFormField<Rodada>(
                   value: _rodadaSelecionada,
-                  hint: const Text('Selecione'),
+                  hint: _rodadas.isEmpty ? const Text('Sem rodadas para selecionar') : const Text('Selecione'),
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 12,
