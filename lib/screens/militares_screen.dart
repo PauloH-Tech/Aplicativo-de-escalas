@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sistema_escalas_front/models/militar.dart';
 
 import '../services/militar_service.dart';
 import '../widgets/app_theme.dart';
 import '../widgets/feedback_views.dart';
+import 'package:sistema_escalas_front/utils/confirmacao_screen.dart';
 
 class MilitaresScreen extends StatefulWidget {
   const MilitaresScreen({super.key});
@@ -39,11 +40,8 @@ class _MilitaresScreenState extends State<MilitaresScreen> {
       });
     }
   }
-  
-  Future<void> _deletar() async {
-    
-  }
-  
+
+  Future<void> _deletar() async {}
 
   void _abrirFormulario([Militar? militar]) {
     showModalBottomSheet(
@@ -74,7 +72,93 @@ class _MilitaresScreenState extends State<MilitaresScreen> {
                 itemCount: _militares.length,
                 itemBuilder: (ctx, i) {
                   final m = _militares[i];
-                  return Card(
+                  return Slidable(
+                    key: Key(m.id),
+                    endActionPane: ActionPane(
+                      motion: const DrawerMotion(),
+                      extentRatio: 0.25,
+                      dismissible: DismissiblePane(
+                        closeOnCancel: true,
+                        confirmDismiss: () async {
+                          final confirmar =
+                              await Confirmacao.mostrarDialogoConfirmacao(
+                                context,
+                                'Inativar',
+                                'Deseja realmente inativar esse militar ?',
+                              );
+
+                          if (!confirmar) {
+                            Slidable.of(ctx)?.close();
+                            return false;
+                          }
+                          final sucesso = await _inativar(m.id);
+                          if (!mounted) return false;
+
+                          if (!sucesso) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Erro ao inativar militar'),
+                              ),
+                            );
+                            return false;
+                          }
+                          return true;
+                        },
+                        onDismissed: () {
+                          setState(() {
+                            _militares.removeWhere(
+                              (militar) => militar.id == m.id,
+                            );
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Militar inativado com sucesso'),
+                            ),
+                          );
+                        },
+                      ),
+                      children: [
+                        SlidableAction(
+                          onPressed: (actionContext) async {
+                            final confirmar =
+                                await Confirmacao.mostrarDialogoConfirmacao(
+                                  actionContext,
+                                  'Inativar',
+                                  'Deseja realmente inativar esse militar ?',
+                                );
+                            if (!confirmar) return;
+
+                            final sucesso = await _inativar(m.id);
+
+                            if (!mounted) return;
+
+                            if (!sucesso) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Erro ao inativar militar'),
+                                ),
+                              );
+                              return;
+                            }
+                            setState(() {
+                              _militares.removeWhere(
+                                (militar) => militar.id == m.id,
+                              );
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Militar desativado com sucesso'),
+                              ),
+                            );
+                          },
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          icon: Icons.group_off_outlined,
+                          label: 'Inativar',
+                        ),
+                      ],
+                    ),
+                    child: Card(
                       child: ListTile(
                         leading: CircleAvatar(
                           backgroundColor: AppTheme.primary.withOpacity(0.1),
@@ -102,9 +186,11 @@ class _MilitaresScreenState extends State<MilitaresScreen> {
                           onPressed: () => _abrirFormulario(m),
                         ),
                       ),
+                    ),
                   );
                 },
               ),
+
         Positioned(
           bottom: 20,
           right: 16,
@@ -118,6 +204,15 @@ class _MilitaresScreenState extends State<MilitaresScreen> {
         ),
       ],
     );
+  }
+
+  Future<bool> _inativar(String idMilitar) async {
+    try {
+      await MilitarService.inativar(id: idMilitar);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
 

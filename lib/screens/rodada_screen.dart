@@ -85,7 +85,6 @@ class _RodadaScreenState extends State<RodadaScreen> {
       children: [
         _rodadas.isEmpty
             ? const EmptyView(
-
                 message: 'Nenhuma rodada cadastrada',
                 icon: Icons.calendar_today_outlined,
               )
@@ -119,14 +118,17 @@ class _RodadaScreenState extends State<RodadaScreen> {
                           : Text('${r.escalados.length} militares escalados'),
                       trailing: r.escalados.isNotEmpty
                           ? IconButton(
-                              onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => DetalhesRodadaScreen(
-                                    escalados: r.escalados,
+                              onPressed: () async {
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => DetalhesRodadaScreen(
+                                      escalados: r.escalados,
+                                    ),
                                   ),
-                                ),
-                              ),
+                                );
+                                _carregar();
+                              },
                               icon: Icon(Icons.chevron_right),
                               color: AppTheme.textSecondary,
                             )

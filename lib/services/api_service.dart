@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:sistema_escalas_front/config/app_config.dart';
 import 'package:sistema_escalas_front/utils/erro_resposta.dart';
@@ -65,9 +66,19 @@ class ApiService {
     return _handle(res);
   }
 
+  static Future<dynamic> patch(String path, Map<String, dynamic>? body) async {
+    final http.Response res;
+    res = await http.patch(
+      Uri.parse('${AppConfig.apiUrl}$path'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+    return _handle(res);
+  }
+
   static dynamic _handle(http.Response res) {
-    // print(res.statusCode);
-    // print(res.body);
+    print(res.statusCode);
+    print(res.body);
     if (res.statusCode >= 200 && res.statusCode < 300) {
       if (res.body.isEmpty) return null;
       return jsonDecode(utf8.decode(res.bodyBytes));

@@ -6,26 +6,26 @@ class MilitarService {
     final data = await ApiService.get('/militar');
     return (data as List).map((j) => Militar.fromJson(j)).toList();
 
-    // return [
-    //   Militar(
-    //     id: '1',
-    //     nome: 'DOS SANTOS',
-    //     stAtivo: true,
-    //     graduacao: Graduacao.segundoSargento,
-    //   ),
-    //   Militar(
-    //     id: '2',
-    //     nome: 'TEIXEIRA',
-    //     stAtivo: true,
-    //     graduacao: Graduacao.cabo,
-    //   ),
-    //   Militar(
-    //     id: '3',
-    //     nome: 'JULIANA',
-    //     stAtivo: true,
-    //     graduacao: Graduacao.cabo,
-    //   ),
-    // ];
+    return [
+      Militar(
+        id: '1',
+        nome: 'DOS SANTOS',
+        stAtivo: true,
+        graduacao: Graduacao.segundoSargento,
+      ),
+      Militar(
+        id: '2',
+        nome: 'TEIXEIRA',
+        stAtivo: true,
+        graduacao: Graduacao.cabo,
+      ),
+      Militar(
+        id: '3',
+        nome: 'JULIANA',
+        stAtivo: true,
+        graduacao: Graduacao.cabo,
+      ),
+    ];
   }
 
   static Future<void> criar({
@@ -47,7 +47,8 @@ class MilitarService {
     await ApiService.put('/militar/$id', body);
   }
 
-  static Future<void> deletar({required String id}) async {
-    await ApiService.delete('/militar/$id');
+  static Future<void> inativar({required String id}) async {
+    await ApiService.patch('/militar/$id/inativar', null);
+    // print('militar deletado id: $id');
   }
 }
