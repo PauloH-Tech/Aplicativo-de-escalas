@@ -1,13 +1,13 @@
 import 'package:sistema_escalas_front/models/militar.dart';
 
 class Afastamento {
-  final String? id;
+  final String id;
   final Militar militar;
   final DateTime inicio;
   final DateTime fim;
   final TipoAfastamento tpAfastamento;
 
-  Afastamento({this.id, required this.militar, required this.inicio, required this.fim, required this.tpAfastamento});
+  Afastamento({required this.id, required this.militar, required this.inicio, required this.fim, required this.tpAfastamento});
 
   factory Afastamento.fromjson(Map<String, dynamic> j) => Afastamento(
     id: j['id'],

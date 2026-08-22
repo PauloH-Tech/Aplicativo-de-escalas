@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:sistema_escalas_front/models/afastamento.dart';
 import 'package:sistema_escalas_front/models/militar.dart';
 import 'package:sistema_escalas_front/services/militar_service.dart';
+import 'package:sistema_escalas_front/utils/confirmacao_screen.dart';
 import 'package:sistema_escalas_front/widgets/feedback_views.dart';
 
 import '../services/afastamento_service.dart';
@@ -72,8 +72,6 @@ class _AfastamentoScreenState extends State<AfastamentoScreen> {
     );
   }
 
-  Future<void> _excluir(Afastamento a) async {}
-
   @override
   Widget build(BuildContext context) {
     if (_loanding) return const LoandingView();
@@ -92,15 +90,84 @@ class _AfastamentoScreenState extends State<AfastamentoScreen> {
                 itemBuilder: (ctx, i) {
                   final a = _afastamentos[i];
                   return Slidable(
+                    key: Key(a.id),
                     endActionPane: ActionPane(
                       motion: const DrawerMotion(),
+                      extentRatio: 0.25,
+                      dismissible: DismissiblePane(
+                        closeOnCancel: true,
+                        confirmDismiss: () async {
+                          final confirmar =
+                              await Confirmacao.mostrarDialogoConfirmacao(
+                                context,
+                                'Deletar',
+                                'Deseja realmente deletar esse afastamento ?',
+                              );
+                          if (!confirmar) {
+                            Slidable.of(ctx)?.close();
+                            return false;
+                          }
+                          final sucesso = await _deletar(a.id);
+                          if (!mounted) return false;
+
+                          if (!sucesso) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Erro ao inativar militar'),
+                              ),
+                            );
+                            return false;
+                          }
+                          return true;
+                        },
+                        onDismissed: () {
+                          setState(() {
+                            _afastamentos.removeWhere(
+                              (afs) => afs.id == a.id,
+                            );
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Afastamento deletado com sucesso'),
+                            ),
+                          );
+                        },
+                      ),
                       children: [
                         SlidableAction(
-                          onPressed: (_) => _excluir(a),
+                          onPressed: (actionContext) async {
+                            final confirmar =
+                                await Confirmacao.mostrarDialogoConfirmacao(
+                                  context,
+                                  'Deletar',
+                                  'Deseja realmente deletar esse afastamento ?',
+                                );
+                            if (!confirmar) return;
+
+                            final sucesso = await _deletar(a.id);
+                            if (!mounted) return;
+
+                            if (!sucesso) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Erro ao deletar afastamento'),
+                                ),
+                              );
+                              return;
+                            }
+                            setState(() {
+                              _afastamentos.removeWhere((afs) => afs.id ==  a.id);
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Afastamento deletado com sucesso'),
+                              ),
+                            );
+                          },
                           backgroundColor: AppTheme.danger,
                           foregroundColor: Colors.white,
                           icon: Icons.delete_outline,
-                          label: 'Excluir',
+                          label: 'Deletar',
                         ),
                       ],
                     ),
@@ -140,6 +207,7 @@ class _AfastamentoScreenState extends State<AfastamentoScreen> {
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: const Text(
+                                  //TODO: Colocar se está ativo de acordo com a data atual
                                   'ativo',
                                   style: TextStyle(
                                     fontSize: 10,
@@ -160,6 +228,7 @@ class _AfastamentoScreenState extends State<AfastamentoScreen> {
                   );
                 },
               ),
+
         Positioned(
           bottom: 20,
           right: 16,
@@ -174,6 +243,8 @@ class _AfastamentoScreenState extends State<AfastamentoScreen> {
       ],
     );
   }
+
+  Future _deletar(String id) async {}
 }
 
 class _FormularioAfastamento extends StatefulWidget {
@@ -186,6 +257,8 @@ class _FormularioAfastamento extends StatefulWidget {
 }
 
 class _FormularioAfastamentoState extends State<_FormularioAfastamento> {
+  final _formKey = GlobalKey<FormState>();
+
   List<Militar> _militares = [];
   Militar? _militarSelecionado;
   TipoAfastamento _tipo = TipoAfastamento.ferias;
@@ -223,22 +296,18 @@ class _FormularioAfastamentoState extends State<_FormularioAfastamento> {
   }
 
   Future<void> _salvar() async {
-    if (_militarSelecionado == null || _inicio == null || _fim == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Preencha todos os campos')));
+    if (!_formKey.currentState!.validate()) {
       return;
     }
+
     setState(() => _salvando = true);
     try {
-      await AfastamentoService.cadastrar(afastamento:
-        Afastamento(
-          militar: _militarSelecionado!,
-          inicio: _inicio!,
-          fim: _fim!,
-          tpAfastamento: _tipo,
-        ),
-      );
+      await AfastamentoService.cadastrar(
+          idMilitar: _militarSelecionado!,
+          dtInicio: _inicio!,
+          dtFim: _fim!,
+          tipo: _tipo);
+
       widget.onSalvo();
       if (mounted) Navigator.pop(context);
     } catch (e) {
@@ -252,81 +321,104 @@ class _FormularioAfastamentoState extends State<_FormularioAfastamento> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        24,
-        24,
-        24,
-        MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Novo afastamento',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 20),
-          DropdownButtonFormField<Militar>(
-            value: _militarSelecionado,
-            hint: const Text('Selecione o militar'),
-            decoration: const InputDecoration(
-              labelText: 'Militar',
-              prefixIcon: Icon(Icons.person_outline),
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          24,
+          24,
+          24,
+          MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Novo afastamento',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            items: _militares
-                .map((m) => DropdownMenuItem(value: m, child: Text(m.nome)))
-                .toList(),
-            onChanged: (m) => setState(() => _militarSelecionado = m),
-          ),
-          const SizedBox(height: 14),
-          DropdownButtonFormField<TipoAfastamento>(
-            value: _tipo,
-            decoration: const InputDecoration(
-              labelText: 'Tipo',
-              prefixIcon: Icon(Icons.category_outlined),
-            ),
-            items: TipoAfastamento.values
-                .map((t) => DropdownMenuItem(value: t, child: Text(t.label)))
-                .toList(),
-            onChanged: (t) => setState(() => _tipo = t!),
-          ),
-          const SizedBox(height: 14),
-          InkWell(
-            onTap: _escolherPeriodo,
-            child: InputDecorator(
+            const SizedBox(height: 20),
+            DropdownButtonFormField<Militar>(
+              value: _militarSelecionado,
               decoration: const InputDecoration(
-                labelText: 'Período',
-                prefixIcon: Icon(Icons.date_range_outlined),
+                labelText: 'Militar',
+                prefixIcon: Icon(Icons.person_outline),
               ),
-              child: Text(
-                _inicio != null && _fim != null
-                    ? '${_fmt.format(_inicio!)} → ${_fmt.format(_fim!)}'
-                    : 'Selecione o período',
-                style: TextStyle(
-                  color: _inicio != null
-                      ? AppTheme.textPrimary
-                      : AppTheme.textSecondary,
-                ),
-              ),
+              hint: const Text('Selecione o militar'),
+              items: _militares
+                  .map((m) => DropdownMenuItem(value: m, child: Text(m.nome)))
+                  .toList(),
+              onChanged: (m) => setState(() => _militarSelecionado = m),
+              validator: (value) {
+                if (value == null) {
+                  return 'Selecione um militar';
+                }
+                return null;
+              },
             ),
-          ),
-          const SizedBox(height: 20),
-          FilledButton(
-            onPressed: _salvando ? null : _salvar,
-            child: _salvando
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
+            const SizedBox(height: 14),
+            DropdownButtonFormField<TipoAfastamento>(
+              value: _tipo,
+              decoration: const InputDecoration(
+                labelText: 'Tipo',
+                prefixIcon: Icon(Icons.category_outlined),
+              ),
+              items: TipoAfastamento.values
+                  .map((t) => DropdownMenuItem(value: t, child: Text(t.label)))
+                  .toList(),
+              onChanged: (t) => setState(() => _tipo = t!),
+            ),
+            const SizedBox(height: 14),
+            FormField<bool>(
+              validator: (_) {
+                if (_inicio == null || _fim == null) {
+                  return 'Selecione o período';
+                }
+                return null;
+              },
+              builder: (field) {
+                return InkWell(
+                  onTap: () async {
+                    await _escolherPeriodo();
+                    field.didChange(_inicio != null && _fim != null);
+                  },
+                  child: InputDecorator(
+                    decoration: InputDecoration(
+                      labelText: 'Período',
+                      prefixIcon: Icon(Icons.date_range_outlined),
+                      errorText: field.errorText,
                     ),
-                  )
-                : const Text('Salvar'),
-          ),
-        ],
+                    child: Text(
+                      _inicio != null && _fim != null
+                          ? '${_fmt.format(_inicio!)} → ${_fmt.format(_fim!)}'
+                          : 'Selecione o período',
+                      style: TextStyle(
+                        color: _inicio != null
+                            ? AppTheme.textPrimary
+                            : AppTheme.textSecondary,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+            FilledButton(
+              onPressed: _salvando ? null : _salvar,
+              child: _salvando
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Text('Salvar'),
+            ),
+          ],
+        ),
       ),
     );
   }

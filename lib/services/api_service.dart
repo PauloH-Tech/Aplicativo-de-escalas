@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:sistema_escalas_front/config/app_config.dart';
 import 'package:sistema_escalas_front/utils/erro_resposta.dart';

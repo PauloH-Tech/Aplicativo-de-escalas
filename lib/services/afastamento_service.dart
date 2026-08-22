@@ -38,10 +38,18 @@ class AfastamentoService {
     // ];
   }
 
-  //mandar o id do policial
-  static Future<void> cadastrar({required Afastamento afastamento}) async {
-    final idMilitar = afastamento.militar.id;
-    final body = afastamento.toJson();
-    await ApiService.post('/afastamento/$idMilitar', body);
+  static Future<void> cadastrar({
+    required Militar idMilitar,
+    required DateTime dtInicio,
+    required DateTime dtFim,
+    required TipoAfastamento tipo,
+
+  }) async {
+    final body = {
+      'dtInicio' : dtInicio.toIso8601String().split('T').first,
+      'dtFim' : dtFim.toIso8601String().split('T').first,
+      'tpAfastamento' : tipo.value
+    } ;
+    await ApiService.post('/afastamento/${idMilitar}', body);
   }
 }

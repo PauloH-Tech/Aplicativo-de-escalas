@@ -151,7 +151,7 @@ class _MilitaresScreenState extends State<MilitaresScreen> {
                               ),
                             );
                           },
-                          backgroundColor: Colors.red,
+                          backgroundColor: AppTheme.danger,
                           foregroundColor: Colors.white,
                           icon: Icons.group_off_outlined,
                           label: 'Inativar',
