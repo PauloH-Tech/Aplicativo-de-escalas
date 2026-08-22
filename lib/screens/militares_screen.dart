@@ -41,8 +41,6 @@ class _MilitaresScreenState extends State<MilitaresScreen> {
     }
   }
 
-  Future<void> _deletar() async {}
-
   void _abrirFormulario([Militar? militar]) {
     showModalBottomSheet(
       context: context,

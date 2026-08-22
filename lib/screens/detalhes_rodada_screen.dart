@@ -30,7 +30,7 @@ class _DetalhesRodadaScreenState extends State<DetalhesRodadaScreen> {
       body: _escalados.isEmpty
           ? const EmptyView(
         message: 'Nenhum militar escalado nesta rodada',
-        icon: Icons.abc,
+        icon: Icons.person_outline,
       )
           : Padding(
         padding: const EdgeInsets.all(8.0),

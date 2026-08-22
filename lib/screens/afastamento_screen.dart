@@ -244,7 +244,14 @@ class _AfastamentoScreenState extends State<AfastamentoScreen> {
     );
   }
 
-  Future _deletar(String id) async {}
+  Future<bool> _deletar(String id) async {
+    try {
+      await AfastamentoService.deletar(id: id);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
 
 class _FormularioAfastamento extends StatefulWidget {
@@ -303,7 +310,7 @@ class _FormularioAfastamentoState extends State<_FormularioAfastamento> {
     setState(() => _salvando = true);
     try {
       await AfastamentoService.cadastrar(
-          idMilitar: _militarSelecionado!,
+          idMilitar: _militarSelecionado!.id,
           dtInicio: _inicio!,
           dtFim: _fim!,
           tipo: _tipo);

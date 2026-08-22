@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 
 import 'fila_screen.dart';
+import 'militares_inativos_screen.dart';
 import 'rodada_screen.dart';
 import 'afastamento_screen.dart';
 import 'configurations_screen.dart';
@@ -32,8 +32,20 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(_titles[_tab]),
         actions: [
+          if (_tab == 2)
+            IconButton(
+              padding: EdgeInsets.only(left: 16, right: 16),
+              icon: const Icon(Icons.group_off_outlined),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const MilitaresInativosScreen(),
+                ),
+              ),
+            ),
           IconButton(
-            icon: const Icon(Icons.settings_outlined),
+            padding: EdgeInsets.only(left: 16, right: 16),
+            icon: const Icon(Icons.more_vert),
             tooltip: 'Configurações',
             onPressed: () => Navigator.push(
               context,

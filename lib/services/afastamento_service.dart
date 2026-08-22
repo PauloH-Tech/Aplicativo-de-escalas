@@ -39,7 +39,7 @@ class AfastamentoService {
   }
 
   static Future<void> cadastrar({
-    required Militar idMilitar,
+    required String idMilitar,
     required DateTime dtInicio,
     required DateTime dtFim,
     required TipoAfastamento tipo,
@@ -51,5 +51,9 @@ class AfastamentoService {
       'tpAfastamento' : tipo.value
     } ;
     await ApiService.post('/afastamento/${idMilitar}', body);
+  }
+
+  static Future<void> deletar({required String id}) async {
+    await ApiService.delete('/afastamento/$id');
   }
 }
