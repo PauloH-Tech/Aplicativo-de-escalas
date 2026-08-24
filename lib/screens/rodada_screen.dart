@@ -16,7 +16,7 @@ class RodadaScreen extends StatefulWidget {
 
 class _RodadaScreenState extends State<RodadaScreen> {
   List<Rodada> _rodadas = [];
-  bool _loanding = true;
+  bool _loading = true;
   String? _erro;
   final _fmt = DateFormat('dd/MM/yyyy');
 
@@ -28,19 +28,19 @@ class _RodadaScreenState extends State<RodadaScreen> {
 
   Future<void> _carregar() async {
     setState(() {
-      _loanding = true;
+      _loading = true;
       _erro = null;
     });
     try {
       final lista = await RodadaService.listarTodas();
       setState(() {
         _rodadas = lista;
-        _loanding = false;
+        _loading = false;
       });
     } catch (e) {
       setState(() {
         _erro = e.toString();
-        _loanding = false;
+        _loading = false;
       });
     }
   }
@@ -78,7 +78,7 @@ class _RodadaScreenState extends State<RodadaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loanding) return LoandingView();
+    if (_loading) return LoadingView();
     if (_erro != null) return ErrorView(message: _erro!, onRetry: _carregar);
 
     return Stack(

@@ -36,12 +36,14 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(
               padding: EdgeInsets.only(left: 16, right: 16),
               icon: const Icon(Icons.group_off_outlined),
-              onPressed: () => Navigator.push(
+              onPressed: () {
+                Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => const MilitaresInativosScreen(),
                 ),
-              ),
+              );
+              },
             ),
           IconButton(
             padding: EdgeInsets.only(left: 16, right: 16),

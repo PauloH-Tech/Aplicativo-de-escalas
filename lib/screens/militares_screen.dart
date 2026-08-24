@@ -17,7 +17,7 @@ class MilitaresScreen extends StatefulWidget {
 
 class _MilitaresScreenState extends State<MilitaresScreen> {
   List<Militar> _militares = [];
-  bool _loanding = true;
+  bool _loading = true;
   String? _erro;
 
   @override
@@ -31,12 +31,12 @@ class _MilitaresScreenState extends State<MilitaresScreen> {
       final lista = await MilitarService.listarTodos();
       setState(() {
         _militares = lista;
-        _loanding = false;
+        _loading = false;
       });
     } catch (e) {
       setState(() {
         _erro = e.toString();
-        _loanding = false;
+        _loading = false;
       });
     }
   }
@@ -55,7 +55,7 @@ class _MilitaresScreenState extends State<MilitaresScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loanding) return const LoandingView();
+    if (_loading) return const LoadingView();
     if (_erro != null) return ErrorView(message: _erro!, onRetry: _carregar);
 
     return Stack(

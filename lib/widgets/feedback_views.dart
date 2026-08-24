@@ -64,8 +64,8 @@ class EmptyView extends StatelessWidget {
   );
 }
 
-class LoandingView extends StatelessWidget {
-  const LoandingView({super.key});
+class LoadingView extends StatelessWidget {
+  const LoadingView({super.key});
 
   @override
   Widget build(BuildContext context) {

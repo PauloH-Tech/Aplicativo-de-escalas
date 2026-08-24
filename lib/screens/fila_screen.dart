@@ -24,7 +24,7 @@ class _FilaScreenState extends State<FilaScreen> {
   List<Rodada> _rodadas = [];
   Rodada? _rodadaSelecionada;
   final Set<String> _selecionados = {};
-  bool _loanding = true;
+  bool _loading = true;
   String? _erro;
   final _fmt = DateFormat('dd/MM/yyyy');
 
@@ -36,7 +36,7 @@ class _FilaScreenState extends State<FilaScreen> {
 
   Future<void> _carregarRodadas() async {
     setState(() {
-      _loanding = true;
+      _loading = true;
       _erro = null;
     });
     try {
@@ -47,19 +47,19 @@ class _FilaScreenState extends State<FilaScreen> {
         _rodadaSelecionada = null;
         _fila.clear();
         _selecionados.clear();
-        _loanding = false;
+        _loading = false;
       });
     } catch (e) {
       setState(() {
         _erro = e.toString();
-        _loanding = false;
+        _loading = false;
       });
     }
   }
 
   Future<void> _carregarFila(Rodada rodada) async {
     setState(() {
-      _loanding = true;
+      _loading = true;
       _erro = null;
       _selecionados.clear();
     });
@@ -68,7 +68,7 @@ class _FilaScreenState extends State<FilaScreen> {
       setState(() {
         _fila = fila;
         _rodadaSelecionada = rodada;
-        _loanding = false;
+        _loading = false;
 
         // _posicoesDisponiveis.clear();
         // int posicaoDisponivel = 1;
@@ -81,7 +81,7 @@ class _FilaScreenState extends State<FilaScreen> {
     } catch (e) {
       setState(() {
         _erro = e.toString();
-        _loanding = false;
+        _loading = false;
       });
     }
   }
@@ -134,7 +134,7 @@ class _FilaScreenState extends State<FilaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loanding) return const LoandingView();
+    if (_loading) return const LoadingView();
     if (_erro != null) {
       return ErrorView(
         message: _erro!,

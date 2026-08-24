@@ -51,4 +51,14 @@ class MilitarService {
     await ApiService.patch('/militar/$id/inativar', null);
     // print('militar deletado id: $id');
   }
+
+  static Future<List<Militar>> listarInativos() async {
+    final data = await ApiService.get('/militar/inativos');
+    return (data as List).map((j) => Militar.fromJson(j)).toList();
+  }
+
+  static Future<void> ativar({required String id}) async {
+    print('dentro do metodo ativar');
+    await ApiService.patch('/militar/$id/ativar', null);
+  }
 }

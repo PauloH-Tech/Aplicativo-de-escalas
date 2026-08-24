@@ -19,7 +19,7 @@ class AfastamentoScreen extends StatefulWidget {
 
 class _AfastamentoScreenState extends State<AfastamentoScreen> {
   List<Afastamento> _afastamentos = [];
-  bool _loanding = true;
+  bool _loading = true;
   String? _erro;
   final _fmt = DateFormat('dd/MM/yyyy');
 
@@ -31,19 +31,19 @@ class _AfastamentoScreenState extends State<AfastamentoScreen> {
 
   Future<void> _carregar() async {
     setState(() {
-      _loanding = true;
+      _loading = true;
       _erro = null;
     });
     try {
       final lista = await AfastamentoService.listar();
       setState(() {
         _afastamentos = lista;
-        _loanding = false;
+        _loading = false;
       });
     } catch (e) {
       setState(() {
         _erro = e.toString();
-        _loanding = false;
+        _loading = false;
       });
     }
   }
@@ -74,7 +74,7 @@ class _AfastamentoScreenState extends State<AfastamentoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loanding) return const LoandingView();
+    if (_loading) return const LoadingView();
     if (_erro != null) return ErrorView(message: _erro!, onRetry: _carregar);
 
     return Stack(
