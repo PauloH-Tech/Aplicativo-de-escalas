@@ -4,6 +4,8 @@ import 'package:sistema_escalas_front/services/escala_service.dart';
 import 'package:sistema_escalas_front/utils/confirmacao_screen.dart';
 import 'package:sistema_escalas_front/widgets/feedback_views.dart';
 
+import '../widgets/app_theme.dart';
+
 class DetalhesRodadaScreen extends StatefulWidget {
   final List<EscalaExtra> escalados;
 
@@ -42,7 +44,18 @@ class _DetalhesRodadaScreenState extends State<DetalhesRodadaScreen> {
             final militar = escala.militar;
 
             return ListTile(
-              leading: const Icon(Icons.person),
+              leading: CircleAvatar(
+                radius: 18,
+                backgroundColor: AppTheme.primary.withOpacity(0.1),
+                child: Text(
+                  militar.nome.substring(0, 2),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.primary,
+                  ),
+                ),
+              ),
               title: Text(militar.nome),
               subtitle: Text(militar.graduacao.label),
               trailing: IconButton(

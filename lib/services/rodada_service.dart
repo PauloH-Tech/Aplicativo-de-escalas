@@ -27,6 +27,6 @@ class RodadaService {
   }
 
   static Future<void> deletar({required String id}) async {
-    await ApiService.delete('militar/$id');
+    await ApiService.delete('/rodada/$id');
   }
 }
