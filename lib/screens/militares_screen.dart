@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sistema_escalas_front/models/militar.dart';
 
+import '../config/app_config.dart';
 import '../services/militar_service.dart';
 import '../widgets/app_theme.dart';
 import '../widgets/feedback_views.dart';
@@ -15,7 +16,7 @@ class MilitaresScreen extends StatefulWidget {
   State<MilitaresScreen> createState() => _MilitaresScreenState();
 }
 
-class _MilitaresScreenState extends State<MilitaresScreen> {
+class _MilitaresScreenState extends State<MilitaresScreen> with RouteAware {
   List<Militar> _militares = [];
   bool _loading = true;
   String? _erro;
@@ -24,6 +25,30 @@ class _MilitaresScreenState extends State<MilitaresScreen> {
   void initState() {
     super.initState();
     _carregar();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final route = ModalRoute.of(context);
+
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+
+    _carregar();
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
   }
 
   Future<void> _carregar() async {

@@ -29,6 +29,9 @@ class EscalaExtraApp extends StatelessWidget {
       supportedLocales: [
         const Locale('pt', 'BR'),
       ],
+      navigatorObservers: [
+        routeObserver
+      ],
       home: const HomeScreen(),
     );
   }

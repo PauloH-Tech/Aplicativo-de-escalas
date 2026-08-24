@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppConfig {
@@ -14,6 +15,7 @@ class AppConfig {
     await prefs.setString(_key, url);
     apiUrl = url;
   }
-
-
 }
+
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
