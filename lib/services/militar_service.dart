@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:sistema_escalas_front/models/militar.dart';
 import 'package:sistema_escalas_front/services/api_service.dart';
 
@@ -6,26 +8,26 @@ class MilitarService {
     final data = await ApiService.get('/militar');
     return (data as List).map((j) => Militar.fromJson(j)).toList();
 
-    return [
-      Militar(
-        id: '1',
-        nome: 'DOS SANTOS',
-        stAtivo: true,
-        graduacao: Graduacao.segundoSargento,
-      ),
-      Militar(
-        id: '2',
-        nome: 'TEIXEIRA',
-        stAtivo: true,
-        graduacao: Graduacao.cabo,
-      ),
-      Militar(
-        id: '3',
-        nome: 'JULIANA',
-        stAtivo: true,
-        graduacao: Graduacao.cabo,
-      ),
-    ];
+    // return [
+    //   Militar(
+    //     id: '1',
+    //     nome: 'DOS SANTOS',
+    //     stAtivo: true,
+    //     graduacao: Graduacao.segundoSargento,
+    //   ),
+    //   Militar(
+    //     id: '2',
+    //     nome: 'TEIXEIRA',
+    //     stAtivo: true,
+    //     graduacao: Graduacao.cabo,
+    //   ),
+    //   Militar(
+    //     id: '3',
+    //     nome: 'JULIANA',
+    //     stAtivo: true,
+    //     graduacao: Graduacao.cabo,
+    //   ),
+    // ];
   }
 
   static Future<void> criar({
@@ -58,7 +60,7 @@ class MilitarService {
   }
 
   static Future<void> ativar({required String id}) async {
-    print('dentro do metodo ativar');
+    dev.log('dentro do metodo ativar');
     await ApiService.patch('/militar/$id/ativar', null);
   }
 }

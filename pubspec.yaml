@@ -1,6 +1,6 @@
 name: sistema_escalas_front
 description: "Aplicativo de escalas da Policia Militar"
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -16,7 +16,10 @@ dependencies:
   intl: ^0.20.2
   provider: ^6.1.2
   flutter_slidable: ^4.0.3
-
+  camera: ^0.12.1
+  path_provider: ^2.1.6
+  path: ^1.9.1
+  flutter_native_splash: ^2.4.8
 
 dev_dependencies:
   flutter_test:
@@ -25,3 +28,13 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/logo_policia_militar.png
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: "assets/logo_policia_militar.png"
+
+  android_12:
+    color: "#FFFFFF"
+    image: "assets/logo_policia_militar.png"

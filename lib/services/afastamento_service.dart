@@ -1,5 +1,4 @@
 import 'package:sistema_escalas_front/models/afastamento.dart';
-import 'package:sistema_escalas_front/models/militar.dart';
 
 import 'api_service.dart';
 
@@ -50,7 +49,7 @@ class AfastamentoService {
       'dtFim' : dtFim.toIso8601String().split('T').first,
       'tpAfastamento' : tipo.value
     } ;
-    await ApiService.post('/afastamento/${idMilitar}', body);
+    await ApiService.post('/afastamento/$idMilitar', body);
   }
 
   static Future<void> deletar({required String id}) async {

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sistema_escalas_front/models/militar.dart';
+import 'package:sistema_escalas_front/utils/confirmacao_screen.dart';
 
 import '../config/app_config.dart';
 import '../services/militar_service.dart';
 import '../widgets/app_theme.dart';
 import '../widgets/feedback_views.dart';
-import 'package:sistema_escalas_front/utils/confirmacao_screen.dart';
 
 class MilitaresScreen extends StatefulWidget {
   const MilitaresScreen({super.key});
@@ -42,6 +41,7 @@ class _MilitaresScreenState extends State<MilitaresScreen> with RouteAware {
   void didPopNext() {
     super.didPopNext();
 
+    // sleep(Duration(milliseconds: 1000));
     _carregar();
   }
 
@@ -184,7 +184,7 @@ class _MilitaresScreenState extends State<MilitaresScreen> with RouteAware {
                     child: Card(
                       child: ListTile(
                         leading: CircleAvatar(
-                          backgroundColor: AppTheme.primary.withOpacity(0.1),
+                          backgroundColor: AppTheme.primary.withValues(alpha: 0.1),
                           child: Text(
                             m.nome.substring(0, 2).toUpperCase(),
                             style: TextStyle(
@@ -253,7 +253,7 @@ class _FormularioMilitarState extends State<_FormularioMilitar> {
   final _formKey = GlobalKey<FormState>();
 
   final _nomeController = TextEditingController();
-  bool _ativo = true;
+  final bool _ativo = true;
   Graduacao? _graduacao;
 
   bool _salvando = false;
@@ -264,7 +264,7 @@ class _FormularioMilitarState extends State<_FormularioMilitar> {
 
     if (widget.militar != null) {
       _nomeController.text = widget.militar!.nome;
-      _ativo = widget.militar!.stAtivo;
+      // _ativo = widget.militar!.stAtivo;
       _graduacao = widget.militar!.graduacao;
     }
   }
@@ -312,7 +312,7 @@ class _FormularioMilitarState extends State<_FormularioMilitar> {
             ),
             const SizedBox(height: 14),
             DropdownButtonFormField<Graduacao>(
-              value: _graduacao,
+              initialValue: _graduacao,
               decoration: const InputDecoration(
                 labelText: 'Graduação',
                 prefixIcon: Icon(Icons.badge_outlined),
@@ -335,17 +335,17 @@ class _FormularioMilitarState extends State<_FormularioMilitar> {
                 return null;
               },
             ),
-            const SizedBox(height: 20),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Ativo'),
-              value: _ativo,
-              onChanged: (value) {
-                setState(() {
-                  _ativo = value;
-                });
-              },
-            ),
+            // const SizedBox(height: 20),
+            // SwitchListTile(
+            //   contentPadding: EdgeInsets.zero,
+            //   title: const Text('Ativo'),
+            //   value: _ativo,
+            //   onChanged: (value) {
+            //     setState(() {
+            //       _ativo = value;
+            //     });
+            //   },
+            // ),
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,

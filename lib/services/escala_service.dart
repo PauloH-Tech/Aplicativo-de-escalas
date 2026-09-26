@@ -1,8 +1,6 @@
-import 'package:sistema_escalas_front/models/afastamento.dart';
 import 'package:sistema_escalas_front/models/escala_extra_request.dart';
 import 'package:sistema_escalas_front/services/api_service.dart';
 
-import '../models/militar.dart';
 import '../models/militar_fila.dart';
 
 class EscalaService {
@@ -15,32 +13,32 @@ class EscalaService {
     // print(data);
     return (data as List).map((j) => MilitarFila.fromJson(j)).toList();
 
-    return [
-      MilitarFila(
-        id: '1',
-        nome: 'DOS SANTOS',
-        graduacao: Graduacao.segundoSargento,
-        dtUltimaEscala: DateTime(20),
-        qtEscalas: 3,
-        tpAfastamento: TipoAfastamento.atestado,
-      ),
-      MilitarFila(
-        id: '2',
-        nome: 'teste',
-        graduacao: Graduacao.segundoSargento,
-        dtUltimaEscala: DateTime(20),
-        qtEscalas: 3,
-        tpAfastamento: null,
-      ),
-      MilitarFila(
-        id: '3',
-        nome: 'testets',
-        graduacao: Graduacao.segundoSargento,
-        dtUltimaEscala: DateTime(20),
-        qtEscalas: 3,
-        tpAfastamento: null,
-      ),
-    ];
+    // return [
+    //   MilitarFila(
+    //     id: '1',
+    //     nome: 'DOS SANTOS',
+    //     graduacao: Graduacao.segundoSargento,
+    //     dtUltimaEscala: DateTime(20),
+    //     qtEscalas: 3,
+    //     tpAfastamento: TipoAfastamento.atestado,
+    //   ),
+    //   MilitarFila(
+    //     id: '2',
+    //     nome: 'teste',
+    //     graduacao: Graduacao.segundoSargento,
+    //     dtUltimaEscala: DateTime(20),
+    //     qtEscalas: 3,
+    //     tpAfastamento: null,
+    //   ),
+    //   MilitarFila(
+    //     id: '3',
+    //     nome: 'testets',
+    //     graduacao: Graduacao.segundoSargento,
+    //     dtUltimaEscala: DateTime(20),
+    //     qtEscalas: 3,
+    //     tpAfastamento: null,
+    //   ),
+    // ];
   }
 
   static Future<void> escalarMilitares({

@@ -8,12 +8,12 @@ class Rodada {
   Rodada({required this.id, required this.data, required this.escalados});
 
   factory Rodada.fromJson(Map<String, dynamic> j) => Rodada(
-          id: j['id'],
-          data: DateTime.parse(j['data']),
-          escalados: (j['escalados'] as List<dynamic>? ?? [])
-            .map((e) => EscalaExtra.fromJson(e as Map<String, dynamic>))
-            .toList(),
-      );
+    id: j['id'],
+    data: DateTime.parse(j['data']),
+    escalados: (j['escalados'] as List<dynamic>? ?? [])
+        .map((e) => EscalaExtra.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
 
   // factory Rodada.fromJson(Map<String, dynamic> j) {
   //   final partes = j['data'].split('/');

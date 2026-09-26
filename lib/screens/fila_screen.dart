@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sistema_escalas_front/models/Rodada.dart';
+import 'package:sistema_escalas_front/models/rodada.dart';
 import 'package:sistema_escalas_front/models/escala_extra_request.dart';
-import 'package:sistema_escalas_front/models/militar.dart';
 import 'package:sistema_escalas_front/services/escala_service.dart';
 import 'package:sistema_escalas_front/services/rodada_service.dart';
 import 'package:sistema_escalas_front/widgets/feedback_views.dart';
@@ -158,7 +157,7 @@ class _FilaScreenState extends State<FilaScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: DropdownButtonFormField<Rodada>(
-                  value: _rodadaSelecionada,
+                  initialValue: _rodadaSelecionada,
                   hint: _rodadas.isEmpty ? const Text('Sem rodadas para selecionar') : const Text('Selecione'),
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.symmetric(
@@ -290,7 +289,7 @@ class _MilitarFilaCard extends StatelessWidget {
                 const SizedBox(width: 12),
                 CircleAvatar(
                   radius: 18,
-                  backgroundColor: AppTheme.primary.withOpacity(0.1),
+                  backgroundColor: AppTheme.primary.withValues(alpha: 0.1),
                   child: Text(
                     militarFila.nome.substring(0, 2),
                     style: const TextStyle(

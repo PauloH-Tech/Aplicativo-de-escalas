@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:flutter/material.dart';
 import 'package:sistema_escalas_front/models/militar.dart';
 import 'package:sistema_escalas_front/services/militar_service.dart';
@@ -78,9 +80,9 @@ class _MilitaresInativosScreenState extends State<MilitaresInativosScreen> {
                             );
                         if (!confirmar) return;
 
-                        print('ativandoo');
+                        dev.log('ativandoo');
                         final sucesso = await _ativar(militar.id);
-                        print('deu certo ? $sucesso');
+                        dev.log('deu certo ? $sucesso');
 
                         if (!mounted) return;
 

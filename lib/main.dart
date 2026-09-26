@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sistema_escalas_front/screens/home_screen.dart';
+import 'package:sistema_escalas_front/screens/splash_screen.dart';
+
 import 'config/app_config.dart';
 import 'widgets/app_theme.dart';
 
@@ -32,7 +34,7 @@ class EscalaExtraApp extends StatelessWidget {
       navigatorObservers: [
         routeObserver
       ],
-      home: const HomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }

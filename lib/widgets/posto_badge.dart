@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'app_theme.dart';
@@ -23,7 +22,7 @@ class PostoBadge extends StatelessWidget {
             ? AppTheme.silver
             : isThird
             ? AppTheme.bronze
-            : AppTheme.primary.withOpacity(0.08),
+            : AppTheme.primary.withValues(alpha: 0.08),
         shape: BoxShape.circle,
       ),
       child: Center(

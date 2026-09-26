@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_escalas_front/screens/login_screen.dart';
+import 'package:sistema_escalas_front/widgets/app_theme.dart';
 
 import 'fila_screen.dart';
 import 'militares_inativos_screen.dart';
@@ -29,6 +31,62 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.60,
+        child: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              Container(
+                padding: EdgeInsets.only(
+                  top: 50,
+                  bottom: 20,
+                  left: 16,
+                  right: 16,
+                ),
+                color: AppTheme.primary,
+                child: Text(
+                  'Menu',
+                  style: TextStyle(color: Colors.white, fontSize: 24),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.home),
+                title: const Text('Início'),
+                onTap: () {
+                  setState(() => _tab = 0);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.settings),
+                title: const Text('Configurações'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ConfiguracoesScreen(),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Sair'),
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
         title: Text(_titles[_tab]),
         actions: [
@@ -38,22 +96,13 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.group_off_outlined),
               onPressed: () {
                 Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const MilitaresInativosScreen(),
-                ),
-              );
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const MilitaresInativosScreen(),
+                  ),
+                );
               },
             ),
-          IconButton(
-            padding: EdgeInsets.only(left: 16, right: 16),
-            icon: const Icon(Icons.more_vert),
-            tooltip: 'Configurações',
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const ConfiguracoesScreen()),
-            ),
-          ),
         ],
       ),
       body: _screens[_tab],

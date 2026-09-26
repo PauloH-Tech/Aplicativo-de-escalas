@@ -1,4 +1,3 @@
-import 'Rodada.dart';
 import 'militar.dart';
 
 class EscalaExtra {

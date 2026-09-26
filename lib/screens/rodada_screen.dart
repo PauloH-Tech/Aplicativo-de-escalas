@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:sistema_escalas_front/screens/detalhes_rodada_screen.dart';
 import 'package:sistema_escalas_front/widgets/feedback_views.dart';
 
-import '../models/Rodada.dart';
+import '../models/rodada.dart';
 import '../services/rodada_service.dart';
 import '../utils/confirmacao_screen.dart';
 import '../widgets/app_theme.dart';

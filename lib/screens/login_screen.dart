@@ -1,0 +1,110 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:sistema_escalas_front/screens/home_screen.dart';
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _usuarioController = TextEditingController();
+  final _senhaController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool _carregando = false;
+  bool _verSenha = false;
+
+  Future<void> _entrar() async {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _carregando = true);
+
+    final user = _usuarioController.text;
+    final senha = _senhaController.text;
+    await Future.delayed(const Duration(milliseconds: 600));
+
+    if (user == 'admin' && senha == '123') {
+      setState(() => _carregando = false);
+
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    }
+    
+    return;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Image.asset('assets/logo_policia_militar.png', height: 150),
+                  const SizedBox(height: 24),
+                  TextFormField(
+                    controller: _usuarioController,
+                    decoration: const InputDecoration(
+                      labelText: 'Usuário',
+                      prefixIcon: Icon(Icons.person),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, insira um usuário';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _senhaController,
+                    obscureText: !_verSenha,
+                    decoration: InputDecoration(
+                      labelText: 'Senha',
+                      prefixIcon: const Icon(Icons.password),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() => _verSenha = !_verSenha);
+                        },
+                        icon: Icon(
+                          _verSenha ? Icons.visibility_off : Icons.visibility,
+                        ),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, insira uma senha';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  FilledButton(
+                    onPressed: _carregando ? null : _entrar,
+                    child: _carregando
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Entrar'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as dev show log;
 
 import 'package:http/http.dart' as http;
 import 'package:sistema_escalas_front/config/app_config.dart';
@@ -76,8 +77,8 @@ class ApiService {
   }
 
   static dynamic _handle(http.Response res) {
-    print(res.statusCode);
-    print(res.body);
+    dev.log('${res.statusCode}');
+    dev.log(res.body);
     if (res.statusCode >= 200 && res.statusCode < 300) {
       if (res.body.isEmpty) return null;
       return jsonDecode(utf8.decode(res.bodyBytes));

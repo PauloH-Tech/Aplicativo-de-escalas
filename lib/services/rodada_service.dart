@@ -1,19 +1,17 @@
-import 'dart:convert';
-
 import 'package:sistema_escalas_front/services/api_service.dart';
 
-import '../models/Rodada.dart';
+import '../models/rodada.dart';
 
 class RodadaService {
   static Future<List<Rodada>> listarTodas() async {
     final data = await ApiService.get('/rodada');
     return (data as List).map((j) => Rodada.fromJson(j)).toList();
 
-    return [
-      Rodada(id: '1', data: DateTime(2026,06,30), escalados: []),
-      Rodada(id: '2', data: DateTime(2026,07,05), escalados: []),
-      Rodada(id: '3', data: DateTime(2026,07,12), escalados: []),
-    ];
+    // return [
+    //   Rodada(id: '1', data: DateTime(2026,06,30), escalados: []),
+    //   Rodada(id: '2', data: DateTime(2026,07,05), escalados: []),
+    //   Rodada(id: '3', data: DateTime(2026,07,12), escalados: []),
+    // ];
   }
 
   static Future<List<Rodada>> proximasRodada() async {
