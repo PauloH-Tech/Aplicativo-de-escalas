@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:sistema_escalas_front/models/usuario.dart';
 import 'package:sistema_escalas_front/screens/login_screen.dart';
+import 'package:sistema_escalas_front/services/auth_service.dart';
+import 'package:sistema_escalas_front/utils/navegacao_auth.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,9 +17,25 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
-    });
+    _iniciar();
+  }
+
+  Future<void> _iniciar() async {
+    final resultados = await Future.wait([
+      Future.delayed(const Duration(seconds: 2)),
+      AuthService.carregarSessao(),
+    ]);
+    final usuario = resultados[1] as Usuario?;
+
+    if (!mounted) return;
+    if (usuario != null) {
+      NavegacaoAuth.irParaHome(context, usuario);
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+    }
   }
 
   @override

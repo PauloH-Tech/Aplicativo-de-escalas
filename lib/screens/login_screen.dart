@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:sistema_escalas_front/screens/home_screen.dart';
+import 'package:sistema_escalas_front/services/auth_service.dart';
+import 'package:sistema_escalas_front/utils/navegacao_auth.dart';
+import 'package:sistema_escalas_front/widgets/app_theme.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,21 +21,21 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _carregando = true);
 
-    final user = _usuarioController.text;
-    final senha = _senhaController.text;
-    await Future.delayed(const Duration(milliseconds: 600));
-
-    if (user == 'admin' && senha == '123') {
-      setState(() => _carregando = false);
-
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+    try {
+      final usuario = await AuthService.login(
+        _usuarioController.text.trim(),
+        _senhaController.text,
       );
+      if (!mounted) return;
+      NavegacaoAuth.irParaHome(context, usuario);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString()), backgroundColor: AppTheme.danger),
+      );
+    } finally {
+      if (mounted) setState(() => _carregando = false);
     }
-    
-    return;
   }
 
   @override

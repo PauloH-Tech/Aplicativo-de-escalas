@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_escalas_front/screens/login_screen.dart';
+import 'package:sistema_escalas_front/utils/navegacao_auth.dart';
 import 'package:sistema_escalas_front/widgets/app_theme.dart';
 
 import 'fila_screen.dart';
@@ -9,14 +10,14 @@ import 'afastamento_screen.dart';
 import 'configurations_screen.dart';
 import 'militares_screen.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class AdminHomeScreen extends StatefulWidget {
+  const AdminHomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<AdminHomeScreen> createState() => _AdminHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _AdminHomeScreenState extends State<AdminHomeScreen> {
   int _tab = 0;
 
   final _titles = ['Fila de escalas', 'Rodadas', 'Militares', 'Afastamentos'];
@@ -74,14 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ListTile(
                 leading: const Icon(Icons.logout),
                 title: const Text('Sair'),
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginScreen(),
-                    ),
-                  );
-                },
+                onTap: () => NavegacaoAuth.sair(context),
               ),
             ],
           ),
