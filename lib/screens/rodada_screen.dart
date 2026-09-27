@@ -83,85 +83,53 @@ class _RodadaScreenState extends State<RodadaScreen> {
     if (_loading) return LoadingView();
     if (_erro != null) return ErrorView(message: _erro!, onRetry: _carregar);
 
-    return Stack(
-      children: [
-        _rodadas.isEmpty
-            ? const EmptyView(
-                message: 'Nenhuma rodada cadastrada',
-                icon: Icons.calendar_today_outlined,
-              )
-            : ListView.builder(
-                padding: const EdgeInsets.only(top: 8, bottom: 80),
-                itemCount: _rodadas.length,
-                itemBuilder: (ctx, i) {
-                  final r = _rodadas[i];
-                  return Slidable(
-                    key: Key(r.id),
-                    endActionPane: ActionPane(
-                      motion: const DrawerMotion(),
-                      extentRatio: 0.25,
-                      dismissible: DismissiblePane(
-                        closeOnCancel: true,
-                        confirmDismiss: () async {
-                          final confirmar =
-                              await Confirmacao.mostrarDialogoConfirmacao(
-                                context,
-                                'Deletar',
-                                'Deseja realmente deletar essa rodada ?\n'
-                                'Está ação deletará todos militares que estiverem associados a essa rodada',
-                              );
-
-                          if (!confirmar) {
-                            Slidable.of(ctx)?.close();
-                            return false;
-                          }
-                          final sucesso = await _excluir(r.id);
-                          if (!mounted) return false;
-                          if (!sucesso) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Erro ao deletar rodada'),
-                              ),
-                            );
-                            return false;
-                          }
-                          return true;
-                        },
-                        onDismissed: () {
-                          setState(() {
-                            _rodadas.removeWhere((rodada) => rodada.id == r.id);
-                          });
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Rodada deletada com sucesso'),
-                            ),
-                          );
-                        },
-                      ),
-                      children: [
-                        SlidableAction(
-                          onPressed: (actionContext) async {
+    return RefreshIndicator(
+      onRefresh: _carregar,
+      child: Stack(
+        children: [
+          _rodadas.isEmpty
+              ? const EmptyView(
+                  message: 'Nenhuma rodada cadastrada',
+                  icon: Icons.calendar_today_outlined,
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.only(top: 8, bottom: 80),
+                  itemCount: _rodadas.length,
+                  itemBuilder: (ctx, i) {
+                    final r = _rodadas[i];
+                    return Slidable(
+                      key: Key(r.id),
+                      endActionPane: ActionPane(
+                        motion: const DrawerMotion(),
+                        extentRatio: 0.25,
+                        dismissible: DismissiblePane(
+                          closeOnCancel: true,
+                          confirmDismiss: () async {
                             final confirmar =
                                 await Confirmacao.mostrarDialogoConfirmacao(
-                                  actionContext,
+                                  context,
                                   'Deletar',
                                   'Deseja realmente deletar essa rodada ?\n'
-                                  'Está ação deletará todos militares que estiverem associados a essa rodada',
+                                      'Está ação deletará todos militares que estiverem associados a essa rodada',
                                 );
-                            if (!confirmar) return;
 
+                            if (!confirmar) {
+                              Slidable.of(ctx)?.close();
+                              return false;
+                            }
                             final sucesso = await _excluir(r.id);
-
-                            if (!mounted) return;
-
+                            if (!mounted) return false;
                             if (!sucesso) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Erro ao deletar rodada'),
                                 ),
                               );
-                              return;
+                              return false;
                             }
+                            return true;
+                          },
+                          onDismissed: () {
                             setState(() {
                               _rodadas.removeWhere(
                                 (rodada) => rodada.id == r.id,
@@ -173,70 +141,109 @@ class _RodadaScreenState extends State<RodadaScreen> {
                               ),
                             );
                           },
-                          backgroundColor: AppTheme.danger,
-                          foregroundColor: Colors.white,
-                          icon: Icons.delete_forever,
-                          label: 'Deletar',
                         ),
-                      ],
-                    ),
-                    child: Card(
-                      child: ListTile(
-                        // leading: CircleAvatar(
-                        //   // backgroundColor: AppTheme.primary,
-                        //   // child: Text(
-                        //   //   '#${r.data}',
-                        //   //   style: const TextStyle(
-                        //   //     color: Colors.white,
-                        //   //     fontSize: 12,
-                        //   //     fontWeight: FontWeight.bold,
-                        //   //   ),
-                        //   // ),
-                        //   child: Icon(Icons.calendar_today_outlined),
-                        // ),
-                        title: Text(
-                          'Rodada ${_fmt.format(r.data)}',
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: r.escalados.isEmpty
-                            ? Text('Nenhum militar escalado')
-                            : r.escalados.length == 1
-                            ? Text('${r.escalados.length} militar escalado')
-                            : Text('${r.escalados.length} militares escalados'),
-                        trailing: r.escalados.isNotEmpty
-                            ? IconButton(
-                                onPressed: () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => DetalhesRodadaScreen(
-                                        escalados: r.escalados,
-                                      ),
-                                    ),
+                        children: [
+                          SlidableAction(
+                            onPressed: (actionContext) async {
+                              final confirmar =
+                                  await Confirmacao.mostrarDialogoConfirmacao(
+                                    actionContext,
+                                    'Deletar',
+                                    'Deseja realmente deletar essa rodada ?\n'
+                                        'Está ação deletará todos militares que estiverem associados a essa rodada',
                                   );
-                                  _carregar();
-                                },
-                                icon: Icon(Icons.chevron_right),
-                                color: AppTheme.textSecondary,
-                              )
-                            : null,
+                              if (!confirmar) return;
+
+                              final sucesso = await _excluir(r.id);
+
+                              if (!mounted) return;
+
+                              if (!sucesso) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Erro ao deletar rodada'),
+                                  ),
+                                );
+                                return;
+                              }
+                              setState(() {
+                                _rodadas.removeWhere(
+                                  (rodada) => rodada.id == r.id,
+                                );
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Rodada deletada com sucesso'),
+                                ),
+                              );
+                            },
+                            backgroundColor: AppTheme.danger,
+                            foregroundColor: Colors.white,
+                            icon: Icons.delete_forever,
+                            label: 'Deletar',
+                          ),
+                        ],
                       ),
-                    ),
-                  );
-                },
-              ),
-        Positioned(
-          bottom: 20,
-          right: 16,
-          child: FloatingActionButton.extended(
-            onPressed: _criarRodada,
-            backgroundColor: AppTheme.primary,
-            foregroundColor: Colors.white,
-            icon: const Icon(Icons.add),
-            label: const Text('Nova Rodada'),
+                      child: Card(
+                        child: ListTile(
+                          // leading: CircleAvatar(
+                          //   // backgroundColor: AppTheme.primary,
+                          //   // child: Text(
+                          //   //   '#${r.data}',
+                          //   //   style: const TextStyle(
+                          //   //     color: Colors.white,
+                          //   //     fontSize: 12,
+                          //   //     fontWeight: FontWeight.bold,
+                          //   //   ),
+                          //   // ),
+                          //   child: Icon(Icons.calendar_today_outlined),
+                          // ),
+                          title: Text(
+                            'Rodada ${_fmt.format(r.data)}',
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          subtitle: r.escalados.isEmpty
+                              ? Text('Nenhum militar escalado')
+                              : r.escalados.length == 1
+                              ? Text('${r.escalados.length} militar escalado')
+                              : Text(
+                                  '${r.escalados.length} militares escalados',
+                                ),
+                          trailing: r.escalados.isNotEmpty
+                              ? IconButton(
+                                  onPressed: () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => DetalhesRodadaScreen(
+                                          escalados: r.escalados,
+                                        ),
+                                      ),
+                                    );
+                                    _carregar();
+                                  },
+                                  icon: Icon(Icons.chevron_right),
+                                  color: AppTheme.textSecondary,
+                                )
+                              : null,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+          Positioned(
+            bottom: 20,
+            right: 16,
+            child: FloatingActionButton.extended(
+              onPressed: _criarRodada,
+              backgroundColor: AppTheme.primary,
+              foregroundColor: Colors.white,
+              icon: const Icon(Icons.add),
+              label: const Text('Nova Rodada'),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

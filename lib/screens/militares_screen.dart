@@ -83,77 +83,41 @@ class _MilitaresScreenState extends State<MilitaresScreen> with RouteAware {
     if (_loading) return const LoadingView();
     if (_erro != null) return ErrorView(message: _erro!, onRetry: _carregar);
 
-    return Stack(
-      children: [
-        _militares.isEmpty
-            ? const EmptyView(
-                message: 'Nenhum militar cadastrado',
-                icon: Icons.person_outline,
-              )
-            : ListView.builder(
-                padding: const EdgeInsets.only(top: 8, bottom: 80),
-                itemCount: _militares.length,
-                itemBuilder: (ctx, i) {
-                  final m = _militares[i];
-                  return Slidable(
-                    key: Key(m.id),
-                    endActionPane: ActionPane(
-                      motion: const DrawerMotion(),
-                      extentRatio: 0.25,
-                      dismissible: DismissiblePane(
-                        closeOnCancel: true,
-                        confirmDismiss: () async {
-                          final confirmar =
-                              await Confirmacao.mostrarDialogoConfirmacao(
-                                context,
-                                'Inativar',
-                                'Deseja realmente inativar esse militar ?',
-                              );
-
-                          if (!confirmar) {
-                            Slidable.of(ctx)?.close();
-                            return false;
-                          }
-                          final sucesso = await _inativar(m.id);
-                          if (!mounted) return false;
-
-                          if (!sucesso) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Erro ao inativar militar'),
-                              ),
-                            );
-                            return false;
-                          }
-                          return true;
-                        },
-                        onDismissed: () {
-                          setState(() {
-                            _militares.removeWhere(
-                              (militar) => militar.id == m.id,
-                            );
-                          });
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Militar inativado com sucesso'),
-                            ),
-                          );
-                        },
-                      ),
-                      children: [
-                        SlidableAction(
-                          onPressed: (actionContext) async {
+    return RefreshIndicator(
+      onRefresh: _carregar,
+      child: Stack(
+        children: [
+          _militares.isEmpty
+              ? const EmptyView(
+                  message: 'Nenhum militar cadastrado',
+                  icon: Icons.person_outline,
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.only(top: 8, bottom: 80),
+                  itemCount: _militares.length,
+                  itemBuilder: (ctx, i) {
+                    final m = _militares[i];
+                    return Slidable(
+                      key: Key(m.id),
+                      endActionPane: ActionPane(
+                        motion: const DrawerMotion(),
+                        extentRatio: 0.25,
+                        dismissible: DismissiblePane(
+                          closeOnCancel: true,
+                          confirmDismiss: () async {
                             final confirmar =
                                 await Confirmacao.mostrarDialogoConfirmacao(
-                                  actionContext,
+                                  context,
                                   'Inativar',
                                   'Deseja realmente inativar esse militar ?',
                                 );
-                            if (!confirmar) return;
 
+                            if (!confirmar) {
+                              Slidable.of(ctx)?.close();
+                              return false;
+                            }
                             final sucesso = await _inativar(m.id);
-
-                            if (!mounted) return;
+                            if (!mounted) return false;
 
                             if (!sucesso) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -161,8 +125,11 @@ class _MilitaresScreenState extends State<MilitaresScreen> with RouteAware {
                                   content: Text('Erro ao inativar militar'),
                                 ),
                               );
-                              return;
+                              return false;
                             }
+                            return true;
+                          },
+                          onDismissed: () {
                             setState(() {
                               _militares.removeWhere(
                                 (militar) => militar.id == m.id,
@@ -170,62 +137,102 @@ class _MilitaresScreenState extends State<MilitaresScreen> with RouteAware {
                             });
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Militar desativado com sucesso'),
+                                content: Text('Militar inativado com sucesso'),
                               ),
                             );
                           },
-                          backgroundColor: AppTheme.danger,
-                          foregroundColor: Colors.white,
-                          icon: Icons.group_off_outlined,
-                          label: 'Inativar',
                         ),
-                      ],
-                    ),
-                    child: Card(
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: AppTheme.primary.withValues(alpha: 0.1),
-                          child: Text(
-                            m.nome.substring(0, 2).toUpperCase(),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.primary,
+                        children: [
+                          SlidableAction(
+                            onPressed: (actionContext) async {
+                              final confirmar =
+                                  await Confirmacao.mostrarDialogoConfirmacao(
+                                    actionContext,
+                                    'Inativar',
+                                    'Deseja realmente inativar esse militar ?',
+                                  );
+                              if (!confirmar) return;
+
+                              final sucesso = await _inativar(m.id);
+
+                              if (!mounted) return;
+
+                              if (!sucesso) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Erro ao inativar militar'),
+                                  ),
+                                );
+                                return;
+                              }
+                              setState(() {
+                                _militares.removeWhere(
+                                  (militar) => militar.id == m.id,
+                                );
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Militar desativado com sucesso',
+                                  ),
+                                ),
+                              );
+                            },
+                            backgroundColor: AppTheme.danger,
+                            foregroundColor: Colors.white,
+                            icon: Icons.group_off_outlined,
+                            label: 'Inativar',
+                          ),
+                        ],
+                      ),
+                      child: Card(
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: AppTheme.primary.withValues(
+                              alpha: 0.1,
+                            ),
+                            child: Text(
+                              m.nome.substring(0, 2).toUpperCase(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.primary,
+                              ),
                             ),
                           ),
-                        ),
-                        title: Text(
-                          m.nome,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text(
-                          m.graduacao.label,
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        trailing: IconButton(
-                          icon: const Icon(
-                            Icons.edit,
-                            color: AppTheme.textSecondary,
+                          title: Text(
+                            m.nome,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
-                          onPressed: () => _abrirFormulario(m),
+                          subtitle: Text(
+                            m.graduacao.label,
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          trailing: IconButton(
+                            icon: const Icon(
+                              Icons.edit,
+                              color: AppTheme.textSecondary,
+                            ),
+                            onPressed: () => _abrirFormulario(m),
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    );
+                  },
+                ),
 
-        Positioned(
-          bottom: 20,
-          right: 16,
-          child: FloatingActionButton.extended(
-            onPressed: () => _abrirFormulario(),
-            backgroundColor: AppTheme.primary,
-            foregroundColor: Colors.white,
-            icon: const Icon(Icons.person_add),
-            label: const Text('Novo militar'),
+          Positioned(
+            bottom: 20,
+            right: 16,
+            child: FloatingActionButton.extended(
+              onPressed: () => _abrirFormulario(),
+              backgroundColor: AppTheme.primary,
+              foregroundColor: Colors.white,
+              icon: const Icon(Icons.person_add),
+              label: const Text('Novo militar'),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

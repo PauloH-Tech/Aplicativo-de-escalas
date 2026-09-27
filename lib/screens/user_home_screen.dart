@@ -33,7 +33,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       _erro = null;
     });
     try {
-      final lista = await RodadaService.listarTodas();
+      //TODO: paginado mostrar algumas de um tempo atras e todas no futuro, feitas e ainda não feitas
+      //mostrar as rodadas onde o usuario esta escalado
+      final lista = await RodadaService.rodadasDoMilitar();
       setState(() {
         _rodadas = lista;
         _loading = false;
