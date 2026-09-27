@@ -15,9 +15,7 @@ class RodadaService {
   }
 
   static Future<List<Rodada>> rodadasDoMilitar() async {
-    //TODO: enviar o token e no backend pegar o id
-    var id = '380bb848-13cd-4fb5-b132-0f5ee18ecabb';
-    final data = await ApiService.get('/rodada/agendadas/$id');
+    final data = await ApiService.get('/rodada/agendadas');
     return (data as List).map((j) => Rodada.fromJson(j)).toList();
   }
 

@@ -3,6 +3,8 @@ import 'dart:developer' as dev show log;
 
 import 'package:http/http.dart' as http;
 import 'package:sistema_escalas_front/config/app_config.dart';
+import 'package:sistema_escalas_front/models/usuario.dart';
+import 'package:sistema_escalas_front/services/auth_service.dart';
 import 'package:sistema_escalas_front/utils/erro_resposta.dart';
 
 class ApiException implements Exception {
@@ -25,11 +27,19 @@ class ApiService {
   //url produção
   // static final String _baseUrl = 'http://54.207.44.155:8080';
 
+  static Map<String, String> _headers() {
+    final usuario = AuthService.usuarioAtual;
+    return {
+      'Content-Type': 'application/json',
+      if (usuario?.token != null) 'Authorization': 'Bearer ${usuario!.token}',
+    };
+  }
+
   static Future<dynamic> get(String path) async {
     final http.Response res;
     res = await http.get(
       Uri.parse('${AppConfig.apiUrl}$path'),
-      headers: {'Content-Type': 'application/json'},
+      headers: _headers(),
     );
     return _handle(res);
   }
@@ -39,7 +49,7 @@ class ApiService {
     // print(body);
     res = await http.post(
       Uri.parse('${AppConfig.apiUrl}$path'),
-      headers: {'Content-Type': 'application/json'},
+      headers: _headers(),
       body: jsonEncode(body),
     );
 
@@ -50,7 +60,7 @@ class ApiService {
     final http.Response res;
     res = await http.put(
       Uri.parse('${AppConfig.apiUrl}$path'),
-      headers: {'Content-Type': 'application/json'},
+      headers: _headers(),
       body: jsonEncode(body),
     );
 
@@ -61,7 +71,7 @@ class ApiService {
     final http.Response res;
     res = await http.delete(
       Uri.parse('${AppConfig.apiUrl}$path'),
-      headers: {'Content-Type': 'application/json'},
+      headers: _headers(),
     );
     return _handle(res);
   }
@@ -70,7 +80,7 @@ class ApiService {
     final http.Response res;
     res = await http.patch(
       Uri.parse('${AppConfig.apiUrl}$path'),
-      headers: {'Content-Type': 'application/json'},
+      headers: _headers(),
       body: jsonEncode(body),
     );
     return _handle(res);
@@ -89,6 +99,6 @@ class ApiService {
     } catch (_) {
       throw ApiException(res.statusCode, 'Erro desconhecido');
     }
-    throw ApiException(erro.status, erro.mensagem);
+    throw ApiException(erro.status, erro.message);
   }
 }

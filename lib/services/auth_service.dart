@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sistema_escalas_front/models/usuario.dart';
@@ -9,20 +10,21 @@ class AuthService {
 
   static Usuario? usuarioAtual;
 
-  static Future<Usuario> login(String usuario, String senha) async {
+  static Future<Usuario> login(String email, String senha) async {
     //TODO: refatorar para comunicacao com o backend
-    await Future.delayed(const Duration(milliseconds: 600));
+    // await Future.delayed(const Duration(milliseconds: 600));
 
-    final Usuario logado;
-    if (usuario == 'admin' && senha == '123') {
-      logado = Usuario(usuario: usuario, role: Role.admin);
-    } else if (usuario == 'user' && senha == '123') {
-      logado = Usuario(usuario: usuario, role: Role.user);
-    } else {
-      throw ApiException(401, 'Usuário ou senha inválidos');
-    }
+    var body = {'email': email, 'senha': senha};
+    final data = await ApiService.post('/auth/login', body);
+
+    final logado = Usuario.fromJson(data);
+
     usuarioAtual = logado;
     await _salvar(logado);
+    // dev.log(usuarioAtual!.nome);
+    // dev.log(usuarioAtual!.token);
+    // dev.log(usuarioAtual!.role.name);
+    // dev.log(usuarioAtual!.militarId.toString());
     return logado;
   }
 

@@ -1,22 +1,30 @@
 class Usuario {
-  final String usuario;
+  final String nome;
   final Role role;
-  final String? token;
+  final String token;
+  final String? militarId;
 
-  Usuario({required this.usuario, required this.role, this.token});
+  Usuario({
+    required this.nome,
+    required this.role,
+    required this.token,
+    this.militarId,
+  });
 
   bool get isAdmin => role == Role.admin;
 
   factory Usuario.fromJson(Map<String, dynamic> j) => Usuario(
-    usuario: j['usuario'],
+    nome: j['nome'],
     role: Role.fromString(j['role']),
     token: j['token'],
+    militarId: j['militarId']
   );
 
   Map<String, dynamic> toJson() => {
-    'usuario': usuario,
+    'nome': nome,
     'role': role.name,
     'token': token,
+    'militarId': militarId
   };
 }
 

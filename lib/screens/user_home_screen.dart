@@ -67,6 +67,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   Widget _body() {
     if (_loading) return const LoadingView();
+    //TODO: interessante talvez mostrei o botao de logout quando der 401 Não autenticado
     if (_erro != null) return ErrorView(message: _erro!, onRetry: _carregar);
     if (_rodadas.isEmpty) {
       return const EmptyView(
