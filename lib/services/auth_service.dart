@@ -11,9 +11,6 @@ class AuthService {
   static Usuario? usuarioAtual;
 
   static Future<Usuario> login(String email, String senha) async {
-    //TODO: refatorar para comunicacao com o backend
-    // await Future.delayed(const Duration(milliseconds: 600));
-
     var body = {'email': email, 'senha': senha};
     final data = await ApiService.post('/auth/login', body);
 
@@ -65,5 +62,15 @@ class AuthService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_key, jsonEncode(u.toJson()));
     // DEPOIS: com token real, prefira flutter_secure_storage
+  }
+
+  static Future<void> primeiroAcesso(String email) async {
+    final body = {'email': email};
+    await ApiService.post('/auth/primeiro-acesso', body);
+  }
+
+  static Future<void> confirmarPrimeiroAcesso(String token, String nome, String senha) async {
+    final body = {'token': token, 'nome': nome, 'senha': senha};
+    await ApiService.post('/auth/primeiro-acesso/confirmar', body);
   }
 }

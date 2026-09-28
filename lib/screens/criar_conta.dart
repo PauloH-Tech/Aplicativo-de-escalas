@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:sistema_escalas_front/screens/login_screen.dart';
 import 'package:sistema_escalas_front/services/auth_service.dart';
 import 'package:sistema_escalas_front/widgets/app_theme.dart';
 
-class ConfirmarSenhaScreen extends StatefulWidget {
-  const ConfirmarSenhaScreen({super.key});
+class CriarContaScreen extends StatefulWidget {
+  const CriarContaScreen({super.key});
 
   @override
-  State<ConfirmarSenhaScreen> createState() => _ConfirmarSenhaScreenState();
+  State<CriarContaScreen> createState() => _CriarContaScreenState();
 }
 
-class _ConfirmarSenhaScreenState extends State<ConfirmarSenhaScreen> {
+class _CriarContaScreenState extends State<CriarContaScreen> {
   final _formKey = GlobalKey<FormState>();
   final _tokenController = TextEditingController();
+  final _nomeController = TextEditingController();
   final _novaSenhaController = TextEditingController();
   final _confirmarSenhaController = TextEditingController();
   bool _carregando = false;
@@ -24,6 +26,7 @@ class _ConfirmarSenhaScreenState extends State<ConfirmarSenhaScreen> {
     _tokenController.dispose();
     _novaSenhaController.dispose();
     _confirmarSenhaController.dispose();
+    _nomeController.dispose();
     super.dispose();
   }
 
@@ -45,11 +48,14 @@ class _ConfirmarSenhaScreenState extends State<ConfirmarSenhaScreen> {
                   // Image.asset('assets/logo_policia_militar.png', height: 150),
                   // const SizedBox(height: 24),
                   Text(
-                    'Recuperar senha',
+                    'Criar conta',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  Text('Um código foi enviado para seu e-mail.'),
-                  Text('Adicione-o abaixo para cadastrar uma nova senha.'),
+                  Text(
+                    'Um código foi enviado para seu e-mail.\nAdicione-o abaixo para concluir a criação da sua conta.',
+                    textAlign: TextAlign.center,
+                  ),
+
                   // const Spacer(flex: 2),
                   const SizedBox(height: 24),
                   // Align(
@@ -65,7 +71,7 @@ class _ConfirmarSenhaScreenState extends State<ConfirmarSenhaScreen> {
                   TextFormField(
                     controller: _tokenController,
                     decoration: const InputDecoration(
-                      hintText: 'Código de recuperação',
+                      hintText: 'Código de autenticação',
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -76,10 +82,21 @@ class _ConfirmarSenhaScreenState extends State<ConfirmarSenhaScreen> {
                   ),
                   const SizedBox(height: 24),
                   TextFormField(
+                    controller: _nomeController,
+                    decoration: InputDecoration(hintText: 'Nome de usuário*'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, insira um nome de usuário';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
                     controller: _novaSenhaController,
                     obscureText: !_verSenha1,
                     decoration: InputDecoration(
-                      hintText: 'Nova senha*',
+                      hintText: 'Senha*',
                       suffixIcon: IconButton(
                         onPressed: () {
                           setState(() => _verSenha1 = !_verSenha1);
@@ -127,7 +144,7 @@ class _ConfirmarSenhaScreenState extends State<ConfirmarSenhaScreen> {
                   // const Spacer(),
                   const SizedBox(height: 24),
                   FilledButton(
-                    onPressed: _carregando ? null : _resetarSenha,
+                    onPressed: _carregando ? null : _confirmarAcesso,
                     child: _carregando
                         ? const SizedBox(
                             width: 20,
@@ -145,13 +162,14 @@ class _ConfirmarSenhaScreenState extends State<ConfirmarSenhaScreen> {
     );
   }
 
-  Future<void> _resetarSenha() async {
+  Future<void> _confirmarAcesso() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _carregando = true);
 
     try {
-      await AuthService.redefinirSenha(
+      await AuthService.confirmarPrimeiroAcesso(
         _tokenController.text,
+        _nomeController.text.trim(),
         _novaSenhaController.text,
       );
       if (!mounted) return;
@@ -159,6 +177,14 @@ class _ConfirmarSenhaScreenState extends State<ConfirmarSenhaScreen> {
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),
         (_) => false,
+      );
+    } on ClientException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: Duration(seconds: 4),
+          content: Text('Sem conexão com a internet:\n${e.message}'),
+          backgroundColor: AppTheme.danger,
+        ),
       );
     } catch (e) {
       if (!mounted) return;

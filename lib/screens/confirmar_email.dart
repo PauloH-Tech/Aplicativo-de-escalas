@@ -1,16 +1,29 @@
+import 'dart:developer' as dev;
+
 import 'package:flutter/material.dart';
-import 'package:sistema_escalas_front/screens/confirmar_senha.dart';
+import 'package:http/http.dart';
+import 'package:sistema_escalas_front/screens/criar_conta.dart';
+import 'package:sistema_escalas_front/screens/resetar_senha.dart';
 import 'package:sistema_escalas_front/services/auth_service.dart';
 import 'package:sistema_escalas_front/widgets/app_theme.dart';
 
-class EsqueciSenhaScreen extends StatefulWidget {
-  const EsqueciSenhaScreen({super.key});
+class ConfirmarEmailScreen extends StatefulWidget {
+  final String titulo;
+  final String mensagem;
+  final String acesso;
+
+  const ConfirmarEmailScreen({
+    super.key,
+    required this.titulo,
+    required this.mensagem,
+    required this.acesso,
+  });
 
   @override
-  State<EsqueciSenhaScreen> createState() => _EsqueciSenhaScreenState();
+  State<ConfirmarEmailScreen> createState() => _ConfirmarEmailScreenState();
 }
 
-class _EsqueciSenhaScreenState extends State<EsqueciSenhaScreen> {
+class _ConfirmarEmailScreenState extends State<ConfirmarEmailScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   bool _carregando = false;
@@ -39,10 +52,10 @@ class _EsqueciSenhaScreenState extends State<EsqueciSenhaScreen> {
                   Image.asset('assets/logo_policia_militar.png', height: 150),
                   const SizedBox(height: 24),
                   Text(
-                    'Esqueceu a senha ?',
+                    widget.titulo,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  Text('Redefina a senha em duas etapas'),
+                  Text(widget.mensagem),
                   // const Spacer(flex: 2),
                   const SizedBox(height: 24),
                   Align(
@@ -55,6 +68,7 @@ class _EsqueciSenhaScreenState extends State<EsqueciSenhaScreen> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 4),
                   TextFormField(
                     controller: _emailController,
                     decoration: const InputDecoration(
@@ -93,11 +107,31 @@ class _EsqueciSenhaScreenState extends State<EsqueciSenhaScreen> {
     setState(() => _carregando = true);
 
     try {
-      // await AuthService.esqueciSenha(_emailController.text.trim());
-      if (!mounted) return;
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ConfirmarSenhaScreen()),
+      switch (widget.acesso) {
+        case 'RESET':
+          dev.log('Esqueci a senha');
+          await AuthService.esqueciSenha(_emailController.text.trim());
+          if (!mounted) return;
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ResetarSenhaScreen()),
+          );
+        case 'FIRST':
+          dev.log('Primeiro acesso');
+          await AuthService.primeiroAcesso(_emailController.text.trim());
+          if (!mounted) return;
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CriarContaScreen()),
+          );
+      }
+    } on ClientException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: Duration(seconds: 4),
+          content: Text('Sem conexão com a internet:\n${e.message}'),
+          backgroundColor: AppTheme.danger,
+        ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

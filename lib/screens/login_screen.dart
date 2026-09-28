@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:sistema_escalas_front/screens/esqueci_senha.dart';
-import 'package:sistema_escalas_front/screens/user_home_screen.dart';
+import 'package:http/http.dart';
+import 'package:sistema_escalas_front/screens/criar_conta.dart';
+import 'package:sistema_escalas_front/screens/confirmar_email.dart';
 import 'package:sistema_escalas_front/services/auth_service.dart';
 import 'package:sistema_escalas_front/utils/navegacao_auth.dart';
 import 'package:sistema_escalas_front/widgets/app_theme.dart';
 
-//TODO: esqueci minha senha: deve pedir o email novamente -> requisicao forgot-password ->
-// com o token temporario -> digitar o token e nova senha (confirmar senha) -> requisicao reset-password
-//futuro mudar o token temporario para um codigo de 6 digitos (parecido com demais apps)
+//TODO: esta causando overflow quando usa o teclado
+//TODO:futuro mudar o token temporario para um codigo de 6 digitos (parecido com demais apps)
 
 //TODO: verificar se causa excepetions quando o token expira e estou com shared
 class LoginScreen extends StatefulWidget {
@@ -42,6 +42,14 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       if (!mounted) return;
       NavegacaoAuth.irParaHome(context, usuario);
+    } on ClientException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: Duration(seconds: 4),
+          content: Text('Sem conexão com a internet:\n${e.message}'),
+          backgroundColor: AppTheme.danger,
+        ),
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -126,7 +134,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const EsqueciSenhaScreen(),
+                                      const ConfirmarEmailScreen(
+                                        titulo: 'Esqueceu a senha ?',
+                                        mensagem:
+                                            'Redefina a senha em duas etapas',
+                                        acesso: 'RESET',
+                                      ),
                                 ),
                               );
                             },
@@ -169,7 +182,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 24),
                         OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const ConfirmarEmailScreen(
+                                      titulo: "Criar sua conta ?",
+                                      mensagem: 'criei sua conta agora',
+                                      acesso: 'FIRST',
+                                    ),
+                              ),
+                            );
+                          },
                           child: const Text('Criar conta'),
                         ),
                       ],
