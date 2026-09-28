@@ -20,7 +20,7 @@ class NavegacaoAuth {
   }
 
   static Future<void> sair(BuildContext context) async {
-    await AuthService.carregarSessao();
+    await AuthService.logout();
     if (!context.mounted) return;
     Navigator.pushAndRemoveUntil(
       context,

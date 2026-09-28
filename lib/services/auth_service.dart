@@ -50,6 +50,17 @@ class AuthService {
     }
   }
 
+  static Future<void> esqueciSenha(String email) async {
+    final body = {'email': email};
+    await ApiService.post('/auth/forgot-password', body);
+  }
+
+  static Future<void> redefinirSenha(String token, String senha) async {
+    final body = {'token': token, 'novaSenha': senha};
+    await ApiService.post('/auth/reset-password', body);
+  }
+
+
   static Future<void> _salvar(Usuario u) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_key, jsonEncode(u.toJson()));

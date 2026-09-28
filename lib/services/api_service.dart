@@ -3,7 +3,6 @@ import 'dart:developer' as dev show log;
 
 import 'package:http/http.dart' as http;
 import 'package:sistema_escalas_front/config/app_config.dart';
-import 'package:sistema_escalas_front/models/usuario.dart';
 import 'package:sistema_escalas_front/services/auth_service.dart';
 import 'package:sistema_escalas_front/utils/erro_resposta.dart';
 
@@ -31,7 +30,8 @@ class ApiService {
     final usuario = AuthService.usuarioAtual;
     return {
       'Content-Type': 'application/json',
-      if (usuario?.token != null) 'Authorization': 'Bearer ${usuario!.token}',
+      if (usuario?.token != null && usuario?.tipo != null)
+        'Authorization': '${usuario!.tipo} ${usuario!.token}',
     };
   }
 
