@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:sistema_escalas_front/models/acesso_usuario.dart';
 import 'package:sistema_escalas_front/models/militar.dart';
+import 'package:sistema_escalas_front/models/usuario.dart';
 import 'package:sistema_escalas_front/utils/confirmacao_screen.dart';
 
 import '../config/app_config.dart';
+import '../services/api_service.dart';
 import '../services/militar_service.dart';
+import '../services/usuario_service.dart';
 import '../widgets/app_theme.dart';
 import '../widgets/feedback_views.dart';
 
@@ -17,6 +21,8 @@ class MilitaresScreen extends StatefulWidget {
 
 class _MilitaresScreenState extends State<MilitaresScreen> with RouteAware {
   List<Militar> _militares = [];
+  // acesso ao app por militarId
+  Map<String, AcessoUsuario> _acessos = {};
   bool _loading = true;
   String? _erro;
 
@@ -53,9 +59,16 @@ class _MilitaresScreenState extends State<MilitaresScreen> with RouteAware {
 
   Future<void> _carregar() async {
     try {
-      final lista = await MilitarService.listarTodos();
+      final (lista, usuarios) = await (
+        MilitarService.listarTodos(),
+        UsuarioService.listar(),
+      ).wait;
       setState(() {
         _militares = lista;
+        _acessos = {
+          for (final u in usuarios)
+            if (u.militarId != null) u.militarId!: u,
+        };
         _loading = false;
       });
     } catch (e) {
@@ -78,6 +91,21 @@ class _MilitaresScreenState extends State<MilitaresScreen> with RouteAware {
     );
   }
 
+  void _abrirAcesso(Militar militar) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => _FormularioAcesso(
+        militar: militar,
+        acesso: _acessos[militar.id],
+        onSalvo: _carregar,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) return const LoadingView();
@@ -97,6 +125,7 @@ class _MilitaresScreenState extends State<MilitaresScreen> with RouteAware {
                   itemCount: _militares.length,
                   itemBuilder: (ctx, i) {
                     final m = _militares[i];
+                    final acesso = _acessos[m.id];
                     return Slidable(
                       key: Key(m.id),
                       endActionPane: ActionPane(
@@ -203,16 +232,37 @@ class _MilitaresScreenState extends State<MilitaresScreen> with RouteAware {
                             m.nome,
                             style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
-                          subtitle: Text(
-                            m.graduacao.label,
-                            style: TextStyle(fontSize: 12),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                m.graduacao.label,
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              const SizedBox(height: 2),
+                              _StatusAcesso(acesso: acesso),
+                            ],
                           ),
-                          trailing: IconButton(
-                            icon: const Icon(
-                              Icons.edit,
-                              color: AppTheme.textSecondary,
-                            ),
-                            onPressed: () => _abrirFormulario(m),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                tooltip: 'Acesso ao app',
+                                icon: const Icon(
+                                  Icons.manage_accounts_outlined,
+                                  color: AppTheme.textSecondary,
+                                ),
+                                onPressed: () => _abrirAcesso(m),
+                              ),
+                              IconButton(
+                                tooltip: 'Editar militar',
+                                icon: const Icon(
+                                  Icons.edit,
+                                  color: AppTheme.textSecondary,
+                                ),
+                                onPressed: () => _abrirFormulario(m),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -305,7 +355,7 @@ class _FormularioMilitarState extends State<_FormularioMilitar> {
             TextFormField(
               controller: _nomeController,
               decoration: InputDecoration(
-                labelText: 'Nome',
+                labelText: 'Nome de guerra*',
                 prefixIcon: Icon(Icons.person_outline),
               ),
               textCapitalization: TextCapitalization.words,
@@ -321,7 +371,7 @@ class _FormularioMilitarState extends State<_FormularioMilitar> {
             DropdownButtonFormField<Graduacao>(
               initialValue: _graduacao,
               decoration: const InputDecoration(
-                labelText: 'Graduação',
+                labelText: 'Graduação*',
                 prefixIcon: Icon(Icons.badge_outlined),
               ),
               items: Graduacao.values.map((graduacao) {
@@ -374,13 +424,11 @@ class _FormularioMilitarState extends State<_FormularioMilitar> {
   }
 
   Future<void> _salvar() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
+
     setState(() {
       _salvando = true;
     });
-
     try {
       if (widget.militar == null) {
         await MilitarService.criar(
@@ -401,12 +449,209 @@ class _FormularioMilitarState extends State<_FormularioMilitar> {
 
       Navigator.pop(context);
       widget.onSalvo();
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
     } finally {
       if (mounted) {
         setState(() {
           _salvando = false;
         });
       }
+    }
+  }
+}
+
+/// Situação do acesso ao app exibida no card do militar.
+class _StatusAcesso extends StatelessWidget {
+  final AcessoUsuario? acesso;
+
+  const _StatusAcesso({this.acesso});
+
+  @override
+  Widget build(BuildContext context) {
+    final (texto, cor) = switch (acesso) {
+      null => ('Sem acesso ao app', AppTheme.textSecondary),
+      AcessoUsuario(ativo: false) => ('Acesso bloqueado', AppTheme.danger),
+      AcessoUsuario(primeiroAcessoPendente: true) => ('Aguardando primeiro acesso', AppTheme.accent),
+      final a => (a.isAdmin ? 'Acesso ativo · Admin' : 'Acesso ativo', AppTheme.success),
+    };
+    return Text(texto, style: TextStyle(fontSize: 11, color: cor));
+  }
+}
+
+/// Concede ou edita o acesso ao app (e-mail e perfil) de um militar.
+/// E-mail e role pertencem ao Usuario, não ao Militar.
+class _FormularioAcesso extends StatefulWidget {
+  final Militar militar;
+  final AcessoUsuario? acesso;
+  final VoidCallback onSalvo;
+
+  const _FormularioAcesso({
+    required this.militar,
+    this.acesso,
+    required this.onSalvo,
+  });
+
+  @override
+  State<StatefulWidget> createState() => _FormularioAcessoState();
+}
+
+class _FormularioAcessoState extends State<_FormularioAcesso> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  bool _isAdmin = false;
+  bool _salvando = false;
+
+  AcessoUsuario? get _acesso => widget.acesso;
+
+  @override
+  void initState() {
+    super.initState();
+    if (_acesso != null) {
+      _emailController.text = _acesso!.email;
+      _isAdmin = _acesso!.isAdmin;
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final acesso = _acesso;
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          24,
+          24,
+          24,
+          MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              acesso == null ? 'Conceder acesso ao app' : 'Acesso ao app',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '${widget.militar.graduacao.label} ${widget.militar.nome}',
+              style: const TextStyle(color: AppTheme.textSecondary),
+            ),
+            if (acesso != null) ...[
+              const SizedBox(height: 8),
+              _StatusAcesso(acesso: acesso),
+            ],
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                labelText: 'E-mail*',
+                prefixIcon: const Icon(Icons.email),
+                helperText: acesso == null
+                    ? 'O militar define nome e senha no primeiro acesso'
+                    : null,
+              ),
+              validator: (value) {
+                final email = value?.trim() ?? '';
+                if (email.isEmpty) return 'Informe o e-mail';
+                final valido = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
+                return valido ? null : 'E-mail inválido';
+              },
+            ),
+            const SizedBox(height: 14),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('É administrador'),
+              value: _isAdmin,
+              onChanged: (value) => setState(() => _isAdmin = value),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _salvando ? null : _salvar,
+                child: _salvando
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(acesso == null ? 'Conceder acesso' : 'Salvar'),
+              ),
+            ),
+            if (acesso != null) ...[
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton.icon(
+                  onPressed: _salvando ? null : () => _alternarStatus(acesso),
+                  style: TextButton.styleFrom(
+                    foregroundColor: acesso.ativo ? AppTheme.danger : AppTheme.success,
+                  ),
+                  icon: Icon(acesso.ativo ? Icons.block : Icons.lock_open),
+                  label: Text(acesso.ativo ? 'Bloquear acesso' : 'Desbloquear acesso'),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _salvar() async {
+    if (!_formKey.currentState!.validate()) return;
+    final email = _emailController.text.trim().toLowerCase();
+    final role = _isAdmin ? Role.admin : Role.user;
+    final acesso = _acesso;
+
+    await _executar(() async {
+      if (acesso == null) {
+        await UsuarioService.concederAcesso(
+          militarId: widget.militar.id,
+          email: email,
+          role: role,
+        );
+      } else {
+        await UsuarioService.atualizarAcesso(id: acesso.id, email: email, role: role);
+      }
+    });
+  }
+
+  Future<void> _alternarStatus(AcessoUsuario acesso) async {
+    final bloquear = acesso.ativo;
+    if (bloquear) {
+      final confirmar = await Confirmacao.mostrarDialogoConfirmacao(
+        context,
+        'Bloquear acesso',
+        'O militar não conseguirá mais entrar no app. Deseja continuar?',
+      );
+      if (!confirmar) return;
+    }
+    await _executar(() => UsuarioService.alterarStatus(id: acesso.id, ativo: !bloquear));
+  }
+
+  Future<void> _executar(Future<void> Function() acao) async {
+    setState(() => _salvando = true);
+    try {
+      await acao();
+      if (!mounted) return;
+      Navigator.pop(context);
+      widget.onSalvo();
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+    } finally {
+      if (mounted) setState(() => _salvando = false);
     }
   }
 }

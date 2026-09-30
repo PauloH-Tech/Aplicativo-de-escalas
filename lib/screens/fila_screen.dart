@@ -117,6 +117,7 @@ class _FilaScreenState extends State<FilaScreen> {
         ),
       );
       setState(() => _selecionados.clear());
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Escala registrada com sucesso!'),
@@ -125,6 +126,7 @@ class _FilaScreenState extends State<FilaScreen> {
       );
       _carregarRodadas();
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro: $e'), backgroundColor: AppTheme.danger),
       );
@@ -158,7 +160,9 @@ class _FilaScreenState extends State<FilaScreen> {
               Expanded(
                 child: DropdownButtonFormField<Rodada>(
                   initialValue: _rodadaSelecionada,
-                  hint: _rodadas.isEmpty ? const Text('Sem rodadas para selecionar') : const Text('Selecione'),
+                  hint: _rodadas.isEmpty
+                      ? const Text('Sem rodadas para selecionar')
+                      : const Text('Selecione'),
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 12,
@@ -210,6 +214,7 @@ class _FilaScreenState extends State<FilaScreen> {
                       selecionado: sel,
                       rodadaSelecionada: true,
                       podeEscalar: podeEscalar,
+                      ultimaEscala: _fmt.format(m.dtUltimaEscala!),
                       onTap: () {
                         setState(() {
                           if (sel) {
@@ -247,6 +252,7 @@ class _MilitarFilaCard extends StatelessWidget {
   final bool rodadaSelecionada;
   final VoidCallback onTap;
   final bool podeEscalar;
+  final String ultimaEscala;
 
   const _MilitarFilaCard({
     super.key,
@@ -256,6 +262,7 @@ class _MilitarFilaCard extends StatelessWidget {
     required this.rodadaSelecionada,
     required this.podeEscalar,
     required this.onTap,
+    required this.ultimaEscala,
   });
 
   @override
@@ -278,48 +285,33 @@ class _MilitarFilaCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             child: Row(
               children: [
-                // TODO: fazer uma abordagem onde o top 3 não considere o afastamentos
-                // if (posicao != null) ...[
-                //   PostoBadge(posicao!),
-                //   const SizedBox(width: 12),
-                // ] else ...[
-                //   const SizedBox(width: 44),
-                // ],
-                PostoBadge(posicao),
-                const SizedBox(width: 12),
-                CircleAvatar(
-                  radius: 18,
-                  backgroundColor: AppTheme.primary.withValues(alpha: 0.1),
-                  child: Text(
-                    militarFila.nome.substring(0, 2),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primary,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        militarFila.nome,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                      ),
-                      if (militarFila.tpAfastamento != null)
-                        Text(
-                          militarFila.tpAfastamento!.label,
+                      ListTile(
+                        leading: PostoBadge(posicao),
+                        title: Text(
+                          militarFila.nome,
                           style: const TextStyle(
-                            color: Colors.red,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
                           ),
                         ),
+                        subtitle: Text(
+                          'Escalas: ${militarFila.qtEscalas}\nUltima: $ultimaEscala',
+                        ),
+                        trailing: militarFila.tpAfastamento != null
+                            ? Text(
+                                militarFila.tpAfastamento!.label,
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              )
+                            : null,
+                      ),
                       const SizedBox(height: 2),
                     ],
                   ),

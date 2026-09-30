@@ -1,4 +1,4 @@
-import 'package:sistema_escalas_front/models/escala_extra.dart';
+import 'escala_extra.dart';
 
 class Rodada {
   final String id;

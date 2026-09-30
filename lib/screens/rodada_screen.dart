@@ -186,18 +186,6 @@ class _RodadaScreenState extends State<RodadaScreen> {
                       ),
                       child: Card(
                         child: ListTile(
-                          // leading: CircleAvatar(
-                          //   // backgroundColor: AppTheme.primary,
-                          //   // child: Text(
-                          //   //   '#${r.data}',
-                          //   //   style: const TextStyle(
-                          //   //     color: Colors.white,
-                          //   //     fontSize: 12,
-                          //   //     fontWeight: FontWeight.bold,
-                          //   //   ),
-                          //   // ),
-                          //   child: Icon(Icons.calendar_today_outlined),
-                          // ),
                           title: Text(
                             'Rodada ${_fmt.format(r.data)}',
                             style: const TextStyle(fontWeight: FontWeight.w600),
@@ -215,9 +203,8 @@ class _RodadaScreenState extends State<RodadaScreen> {
                                     await Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) => DetalhesRodadaScreen(
-                                          escalados: r.escalados,
-                                        ),
+                                        builder: (_) =>
+                                            DetalhesRodadaScreen(rodada: r),
                                       ),
                                     );
                                     _carregar();

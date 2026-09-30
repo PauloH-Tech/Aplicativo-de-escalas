@@ -13,7 +13,7 @@ class Militar {
     required this.id,
     required this.nome,
     required this.stAtivo,
-    required this.graduacao
+    required this.graduacao,
     // this.qtdEscalas,
     // this.dtUltimaEscala,
     // this.tpAfastamento

@@ -1,3 +1,4 @@
+import 'package:sistema_escalas_front/models/escala_extra.dart';
 import 'package:sistema_escalas_front/models/escala_extra_request.dart';
 import 'package:sistema_escalas_front/services/api_service.dart';
 
@@ -41,12 +42,12 @@ class EscalaService {
     // ];
   }
 
-  static Future<void> escalarMilitares({
+  static Future<List<EscalaExtra>> escalarMilitares({
     required EscalaExtraRequest escalados,
   }) async {
-    var body = escalados.toJson();
     // print(body);
-    await ApiService.post('/escala', body);
+    final data = await ApiService.post('/escala', escalados.toJson());
+    return (data as List).map((j) => EscalaExtra.fromJson(j)).toList();
   }
 
   static Future<void> deletarEscalado({required String id}) async {

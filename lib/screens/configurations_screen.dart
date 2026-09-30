@@ -35,21 +35,21 @@ class _ConfiguracoesScreenState extends State<ConfiguracoesScreen> {
                 'Versão do app: 1.0.0',
                 style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
               ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: urlController,
-                decoration: InputDecoration(
-                  labelText: 'URL da API',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(onPressed: () async {
-                await AppConfig.setApiUrl(urlController.text);
+              // const SizedBox(height: 20),
+              // TextField(
+              //   controller: urlController,
+              //   decoration: InputDecoration(
+              //     labelText: 'URL da API',
+              //     border: OutlineInputBorder(),
+              //   ),
+              // ),
+              // const SizedBox(height: 20),
+              // ElevatedButton(onPressed: () async {
+              //   await AppConfig.setApiUrl(urlController.text);
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('URL salva!')),);
-              }, child: Text('Salvar')),
+              //   ScaffoldMessenger.of(context).showSnackBar(
+              //     SnackBar(content: Text('URL salva!')),);
+              // }, child: Text('Salvar')),
             ],
           ),
         ),
