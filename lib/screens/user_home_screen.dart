@@ -85,6 +85,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           final rodada = _rodadas[i];
           return Card(
             child: ExpansionTile(
+              shape: const Border(),
               leading: const Icon(
                 Icons.calendar_month_outlined,
                 color: AppTheme.primary,
@@ -93,17 +94,18 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               subtitle: Text('${rodada.escalados.length} escalado(s)'),
               children: rodada.escalados.isEmpty
                   ? [const ListTile(title: Text('Ninguém escalado ainda'))]
-                  : rodada.escalados
-                        .map(
-                          (e) => ListTile(
-                            dense: true,
-                            leading: const Icon(Icons.person_outline),
-                            title: Text(e.militar.nome),
-                            subtitle: Text(e.militar.graduacao.label),
-                            // sem botão de excluir: usuário só consulta
-                          ),
-                        )
-                        .toList(),
+                  : [
+                      const Divider(height: 1, thickness: 1),
+                      ...rodada.escalados.map(
+                        (e) => ListTile(
+                          dense: true,
+                          leading: const Icon(Icons.person_outline),
+                          title: Text(e.militar.nome),
+                          subtitle: Text(e.militar.graduacao.label),
+                          // sem botão de excluir: usuário só consulta
+                        ),
+                      ),
+                    ],
             ),
           );
         },

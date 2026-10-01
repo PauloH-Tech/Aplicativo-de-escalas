@@ -5,10 +5,10 @@ class AppConfig {
   // static const String _key = 'api_url';
 
   //celular fisico (cmd: adb reverse tcp:8081 tcp:8081)
-  // static String apiUrl = 'http://localhost:8081';
+  static String apiUrl = 'http://localhost:8081';
 
   //Emulador
-  static String apiUrl = 'http://10.0.2.2:8081';
+  // static String apiUrl = 'http://10.0.2.2:8081';
 
   // static Future<void> init() async {
   //   final prefs = await SharedPreferences.getInstance();

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:sistema_escalas_front/screens/criar_conta.dart';
@@ -18,8 +20,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _usuarioController = TextEditingController();
-  final _senhaController = TextEditingController();
+  final _usuarioController = TextEditingController(text: 'admin@escalas.com.br');
+  final _senhaController = TextEditingController(text: 'admin123');
   final _formKey = GlobalKey<FormState>();
   bool _carregando = false;
   bool _verSenha = false;
@@ -47,6 +49,16 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(
           duration: Duration(seconds: 4),
           content: Text('Sem conexão com a internet:\n${e.message}'),
+          backgroundColor: AppTheme.danger,
+        ),
+      );
+    } on TimeoutException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: Duration(seconds: 4),
+          content: Text(
+            'Ops! A conexão demorou muito a responder. Verifique sua internet e tente novamente.',
+          ),
           backgroundColor: AppTheme.danger,
         ),
       );
