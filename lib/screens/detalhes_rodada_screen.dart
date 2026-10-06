@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:sistema_escalas_front/models/escala_extra_request.dart';
-import 'package:sistema_escalas_front/models/militar_fila.dart';
-import 'package:sistema_escalas_front/models/rodada.dart';
-import 'package:sistema_escalas_front/models/escala_extra.dart';
-import 'package:sistema_escalas_front/services/api_service.dart';
-import 'package:sistema_escalas_front/services/escala_service.dart';
-import 'package:sistema_escalas_front/utils/confirmacao_screen.dart';
-import 'package:sistema_escalas_front/widgets/feedback_views.dart';
+import 'package:escalas_extras/models/escala_extra_request.dart';
+import 'package:escalas_extras/models/militar_fila.dart';
+import 'package:escalas_extras/models/rodada.dart';
+import 'package:escalas_extras/models/escala_extra.dart';
+import 'package:escalas_extras/services/api_service.dart';
+import 'package:escalas_extras/services/escala_service.dart';
+import 'package:escalas_extras/utils/confirmacao_screen.dart';
+import 'package:escalas_extras/widgets/feedback_views.dart';
 
 import '../widgets/app_theme.dart';
 

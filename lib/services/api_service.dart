@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:developer' as dev show log;
 
 import 'package:http/http.dart' as http;
-import 'package:sistema_escalas_front/config/app_config.dart';
-import 'package:sistema_escalas_front/services/auth_service.dart';
-import 'package:sistema_escalas_front/utils/erro_resposta.dart';
+import 'package:escalas_extras/config/app_config.dart';
+import 'package:escalas_extras/services/auth_service.dart';
+import 'package:escalas_extras/utils/erro_resposta.dart';
 
 class ApiException implements Exception {
   final int statusCode;
@@ -37,52 +37,56 @@ class ApiService {
 
   static Future<dynamic> get(String path) async {
     final http.Response res;
-    res = await http.get(
-      Uri.parse('${AppConfig.apiUrl}$path'),
-      headers: _headers(),
-    ).timeout(const Duration(seconds: 12));
+    res = await http
+        .get(Uri.parse('${AppConfig.apiUrl}$path'), headers: _headers())
+        .timeout(const Duration(seconds: 12));
     return _handle(res);
   }
 
   static Future<dynamic> post(String path, Map<String, dynamic> body) async {
     final http.Response res;
     // print(body);
-    res = await http.post(
-      Uri.parse('${AppConfig.apiUrl}$path'),
-      headers: _headers(),
-      body: jsonEncode(body),
-    ).timeout(const Duration(seconds: 12));
+    res = await http
+        .post(
+          Uri.parse('${AppConfig.apiUrl}$path'),
+          headers: _headers(),
+          body: jsonEncode(body),
+        )
+        .timeout(const Duration(seconds: 12));
 
     return _handle(res);
   }
 
   static Future<dynamic> put(String path, Map<String, dynamic> body) async {
     final http.Response res;
-    res = await http.put(
-      Uri.parse('${AppConfig.apiUrl}$path'),
-      headers: _headers(),
-      body: jsonEncode(body),
-    ).timeout(const Duration(seconds: 12));
+    res = await http
+        .put(
+          Uri.parse('${AppConfig.apiUrl}$path'),
+          headers: _headers(),
+          body: jsonEncode(body),
+        )
+        .timeout(const Duration(seconds: 12));
 
     return _handle(res);
   }
 
   static Future<dynamic> delete(String path) async {
     final http.Response res;
-    res = await http.delete(
-      Uri.parse('${AppConfig.apiUrl}$path'),
-      headers: _headers(),
-    ).timeout(const Duration(seconds: 12));
+    res = await http
+        .delete(Uri.parse('${AppConfig.apiUrl}$path'), headers: _headers())
+        .timeout(const Duration(seconds: 12));
     return _handle(res);
   }
 
   static Future<dynamic> patch(String path, Map<String, dynamic>? body) async {
     final http.Response res;
-    res = await http.patch(
-      Uri.parse('${AppConfig.apiUrl}$path'),
-      headers: _headers(),
-      body: jsonEncode(body),
-    ).timeout(const Duration(seconds: 12));
+    res = await http
+        .patch(
+          Uri.parse('${AppConfig.apiUrl}$path'),
+          headers: _headers(),
+          body: jsonEncode(body),
+        )
+        .timeout(const Duration(seconds: 12));
     return _handle(res);
   }
 

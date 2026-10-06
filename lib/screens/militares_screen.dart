@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:sistema_escalas_front/models/acesso_usuario.dart';
-import 'package:sistema_escalas_front/models/militar.dart';
-import 'package:sistema_escalas_front/models/usuario.dart';
-import 'package:sistema_escalas_front/utils/confirmacao_screen.dart';
+import 'package:escalas_extras/models/acesso_usuario.dart';
+import 'package:escalas_extras/models/militar.dart';
+import 'package:escalas_extras/models/usuario.dart';
+import 'package:escalas_extras/utils/confirmacao_screen.dart';
 
 import '../config/app_config.dart';
 import '../services/api_service.dart';
@@ -451,7 +451,9 @@ class _FormularioMilitarState extends State<_FormularioMilitar> {
       widget.onSalvo();
     } on ApiException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     } finally {
       if (mounted) {
         setState(() {
@@ -473,8 +475,14 @@ class _StatusAcesso extends StatelessWidget {
     final (texto, cor) = switch (acesso) {
       null => ('Sem acesso ao app', AppTheme.textSecondary),
       AcessoUsuario(ativo: false) => ('Acesso bloqueado', AppTheme.danger),
-      AcessoUsuario(primeiroAcessoPendente: true) => ('Aguardando primeiro acesso', AppTheme.accent),
-      final a => (a.isAdmin ? 'Acesso ativo · Admin' : 'Acesso ativo', AppTheme.success),
+      AcessoUsuario(primeiroAcessoPendente: true) => (
+        'Aguardando primeiro acesso',
+        AppTheme.accent,
+      ),
+      final a => (
+        a.isAdmin ? 'Acesso ativo · Admin' : 'Acesso ativo',
+        AppTheme.success,
+      ),
     };
     return Text(texto, style: TextStyle(fontSize: 11, color: cor));
   }
@@ -563,7 +571,9 @@ class _FormularioAcessoState extends State<_FormularioAcesso> {
               validator: (value) {
                 final email = value?.trim() ?? '';
                 if (email.isEmpty) return 'Informe o e-mail';
-                final valido = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
+                final valido = RegExp(
+                  r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+                ).hasMatch(email);
                 return valido ? null : 'E-mail inválido';
               },
             ),
@@ -595,10 +605,14 @@ class _FormularioAcessoState extends State<_FormularioAcesso> {
                 child: TextButton.icon(
                   onPressed: _salvando ? null : () => _alternarStatus(acesso),
                   style: TextButton.styleFrom(
-                    foregroundColor: acesso.ativo ? AppTheme.danger : AppTheme.success,
+                    foregroundColor: acesso.ativo
+                        ? AppTheme.danger
+                        : AppTheme.success,
                   ),
                   icon: Icon(acesso.ativo ? Icons.block : Icons.lock_open),
-                  label: Text(acesso.ativo ? 'Bloquear acesso' : 'Desbloquear acesso'),
+                  label: Text(
+                    acesso.ativo ? 'Bloquear acesso' : 'Desbloquear acesso',
+                  ),
                 ),
               ),
             ],
@@ -622,7 +636,11 @@ class _FormularioAcessoState extends State<_FormularioAcesso> {
           role: role,
         );
       } else {
-        await UsuarioService.atualizarAcesso(id: acesso.id, email: email, role: role);
+        await UsuarioService.atualizarAcesso(
+          id: acesso.id,
+          email: email,
+          role: role,
+        );
       }
     });
   }
@@ -637,7 +655,9 @@ class _FormularioAcessoState extends State<_FormularioAcesso> {
       );
       if (!confirmar) return;
     }
-    await _executar(() => UsuarioService.alterarStatus(id: acesso.id, ativo: !bloquear));
+    await _executar(
+      () => UsuarioService.alterarStatus(id: acesso.id, ativo: !bloquear),
+    );
   }
 
   Future<void> _executar(Future<void> Function() acao) async {
@@ -649,7 +669,9 @@ class _FormularioAcessoState extends State<_FormularioAcesso> {
       widget.onSalvo();
     } on ApiException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     } finally {
       if (mounted) setState(() => _salvando = false);
     }

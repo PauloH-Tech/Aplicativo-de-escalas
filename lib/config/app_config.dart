@@ -9,7 +9,7 @@ class AppConfig {
 
   //Emulador
   // static String apiUrl = 'http://10.0.2.2:8081';
-
+  
   // static Future<void> init() async {
   //   final prefs = await SharedPreferences.getInstance();
   //   apiUrl = prefs.getString(_key) ?? '';

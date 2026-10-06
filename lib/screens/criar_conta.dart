@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:sistema_escalas_front/screens/login_screen.dart';
-import 'package:sistema_escalas_front/services/auth_service.dart';
-import 'package:sistema_escalas_front/widgets/app_theme.dart';
+import 'package:escalas_extras/screens/login_screen.dart';
+import 'package:escalas_extras/services/auth_service.dart';
+import 'package:escalas_extras/widgets/app_theme.dart';
 
 class CriarContaScreen extends StatefulWidget {
   const CriarContaScreen({super.key});

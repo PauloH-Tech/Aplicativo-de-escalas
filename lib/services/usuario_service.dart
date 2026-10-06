@@ -1,6 +1,6 @@
-import 'package:sistema_escalas_front/models/acesso_usuario.dart';
-import 'package:sistema_escalas_front/models/usuario.dart';
-import 'package:sistema_escalas_front/services/api_service.dart';
+import 'package:escalas_extras/models/acesso_usuario.dart';
+import 'package:escalas_extras/models/usuario.dart';
+import 'package:escalas_extras/services/api_service.dart';
 
 class UsuarioService {
   static Future<List<AcessoUsuario>> listar() async {
@@ -14,8 +14,14 @@ class UsuarioService {
     required String email,
     required Role role,
   }) async {
-    final body = {'militarId': militarId, 'email': email, 'role': role.name.toUpperCase()};
-    return AcessoUsuario.fromJson(await ApiService.post('/usuarios/acesso', body));
+    final body = {
+      'militarId': militarId,
+      'email': email,
+      'role': role.name.toUpperCase(),
+    };
+    return AcessoUsuario.fromJson(
+      await ApiService.post('/usuarios/acesso', body),
+    );
   }
 
   static Future<AcessoUsuario> atualizarAcesso({
@@ -27,7 +33,10 @@ class UsuarioService {
     return AcessoUsuario.fromJson(await ApiService.put('/usuarios/$id', body));
   }
 
-  static Future<void> alterarStatus({required String id, required bool ativo}) async {
+  static Future<void> alterarStatus({
+    required String id,
+    required bool ativo,
+  }) async {
     await ApiService.patch('/usuarios/$id/status?ativo=$ativo', null);
   }
 }

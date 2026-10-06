@@ -1,6 +1,6 @@
-import 'package:sistema_escalas_front/models/escala_extra.dart';
-import 'package:sistema_escalas_front/models/escala_extra_request.dart';
-import 'package:sistema_escalas_front/services/api_service.dart';
+import 'package:escalas_extras/models/escala_extra.dart';
+import 'package:escalas_extras/models/escala_extra_request.dart';
+import 'package:escalas_extras/services/api_service.dart';
 
 import '../models/militar_fila.dart';
 

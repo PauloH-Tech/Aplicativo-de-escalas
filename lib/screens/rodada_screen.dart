@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:sistema_escalas_front/screens/detalhes_rodada_screen.dart';
-import 'package:sistema_escalas_front/widgets/feedback_views.dart';
+import 'package:escalas_extras/screens/detalhes_rodada_screen.dart';
+import 'package:escalas_extras/widgets/feedback_views.dart';
 
 import '../models/rodada.dart';
 import '../services/rodada_service.dart';

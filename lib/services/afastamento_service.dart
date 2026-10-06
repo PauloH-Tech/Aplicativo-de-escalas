@@ -1,4 +1,4 @@
-import 'package:sistema_escalas_front/models/afastamento.dart';
+import 'package:escalas_extras/models/afastamento.dart';
 
 import 'api_service.dart';
 
@@ -42,13 +42,12 @@ class AfastamentoService {
     required DateTime dtInicio,
     required DateTime dtFim,
     required TipoAfastamento tipo,
-
   }) async {
     final body = {
-      'dtInicio' : dtInicio.toIso8601String().split('T').first,
-      'dtFim' : dtFim.toIso8601String().split('T').first,
-      'tpAfastamento' : tipo.value
-    } ;
+      'dtInicio': dtInicio.toIso8601String().split('T').first,
+      'dtFim': dtFim.toIso8601String().split('T').first,
+      'tpAfastamento': tipo.value,
+    };
     await ApiService.post('/afastamento/$idMilitar', body);
   }
 

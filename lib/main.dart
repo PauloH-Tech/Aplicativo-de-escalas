@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:sistema_escalas_front/screens/admin_home_screen.dart';
-import 'package:sistema_escalas_front/screens/splash_screen.dart';
+import 'package:escalas_extras/screens/admin_home_screen.dart';
+import 'package:escalas_extras/screens/splash_screen.dart';
 
 import 'config/app_config.dart';
 import 'widgets/app_theme.dart';
@@ -26,14 +26,10 @@ class EscalaExtraApp extends StatelessWidget {
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate
+        GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: [
-        const Locale('pt', 'BR'),
-      ],
-      navigatorObservers: [
-        routeObserver
-      ],
+      supportedLocales: [const Locale('pt', 'BR')],
+      navigatorObservers: [routeObserver],
       home: const SplashScreen(),
     );
   }

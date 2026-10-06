@@ -1,4 +1,4 @@
-import 'package:sistema_escalas_front/models/usuario.dart';
+import 'package:escalas_extras/models/usuario.dart';
 
 /// Acesso ao app de um militar (usuário cadastrado pelo admin).
 class AcessoUsuario {

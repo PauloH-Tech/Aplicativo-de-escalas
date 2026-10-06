@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:sistema_escalas_front/screens/criar_conta.dart';
-import 'package:sistema_escalas_front/screens/confirmar_email.dart';
-import 'package:sistema_escalas_front/services/auth_service.dart';
-import 'package:sistema_escalas_front/utils/navegacao_auth.dart';
-import 'package:sistema_escalas_front/widgets/app_theme.dart';
+import 'package:escalas_extras/screens/criar_conta.dart';
+import 'package:escalas_extras/screens/confirmar_email.dart';
+import 'package:escalas_extras/services/auth_service.dart';
+import 'package:escalas_extras/utils/navegacao_auth.dart';
+import 'package:escalas_extras/widgets/app_theme.dart';
 
 //TODO: esta causando overflow quando usa o teclado
 //TODO:futuro mudar o token temporario para um codigo de 6 digitos (parecido com demais apps)
@@ -20,8 +20,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _usuarioController = TextEditingController(text: 'admin@escalas.com.br');
-  final _senhaController = TextEditingController(text: 'admin123');
+  final _usuarioController = TextEditingController();
+  final _senhaController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _carregando = false;
   bool _verSenha = false;

@@ -1,4 +1,4 @@
-import 'package:sistema_escalas_front/services/api_service.dart';
+import 'package:escalas_extras/services/api_service.dart';
 
 import '../models/rodada.dart';
 

@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:developer' as dev;
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sistema_escalas_front/models/usuario.dart';
-import 'package:sistema_escalas_front/services/api_service.dart';
+import 'package:escalas_extras/models/usuario.dart';
+import 'package:escalas_extras/services/api_service.dart';
 
 class AuthService {
   static const _key = 'usuario';
@@ -57,7 +57,6 @@ class AuthService {
     await ApiService.post('/auth/reset-password', body);
   }
 
-
   static Future<void> _salvar(Usuario u) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_key, jsonEncode(u.toJson()));
@@ -69,7 +68,11 @@ class AuthService {
     await ApiService.post('/auth/primeiro-acesso', body);
   }
 
-  static Future<void> confirmarPrimeiroAcesso(String token, String nome, String senha) async {
+  static Future<void> confirmarPrimeiroAcesso(
+    String token,
+    String nome,
+    String senha,
+  ) async {
     final body = {'token': token, 'nome': nome, 'senha': senha};
     await ApiService.post('/auth/primeiro-acesso/confirmar', body);
   }

@@ -2,10 +2,10 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:sistema_escalas_front/screens/criar_conta.dart';
-import 'package:sistema_escalas_front/screens/resetar_senha.dart';
-import 'package:sistema_escalas_front/services/auth_service.dart';
-import 'package:sistema_escalas_front/widgets/app_theme.dart';
+import 'package:escalas_extras/screens/criar_conta.dart';
+import 'package:escalas_extras/screens/resetar_senha.dart';
+import 'package:escalas_extras/services/auth_service.dart';
+import 'package:escalas_extras/widgets/app_theme.dart';
 
 class ConfirmarEmailScreen extends StatefulWidget {
   final String titulo;

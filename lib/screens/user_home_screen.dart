@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sistema_escalas_front/services/auth_service.dart';
-import 'package:sistema_escalas_front/utils/navegacao_auth.dart';
-import 'package:sistema_escalas_front/widgets/app_theme.dart';
-import 'package:sistema_escalas_front/widgets/feedback_views.dart';
+import 'package:escalas_extras/models/acesso_usuario.dart';
+import 'package:escalas_extras/models/usuario.dart';
+import 'package:escalas_extras/services/auth_service.dart';
+import 'package:escalas_extras/utils/navegacao_auth.dart';
+import 'package:escalas_extras/widgets/app_theme.dart';
+import 'package:escalas_extras/widgets/feedback_views.dart';
 
 import '../models/rodada.dart';
 import '../services/rodada_service.dart';
@@ -20,12 +22,26 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   bool _loading = true;
   String? _erro;
   final _fmt = DateFormat('dd/MM/yyyy (EEEE)', 'pt_BR');
+  // late Usuario? _usuario;
+  final Usuario? _usuario = AuthService.usuarioAtual;
 
   @override
   void initState() {
     super.initState();
+    // _carregarUsuario();
     _carregar();
   }
+
+  // Future<void> _carregarUsuario() async {
+  //   final user = AuthService.usuarioAtual;
+  //   if (user!.nome.length >= 15) {
+  //     user.nome.substring(1, 15);
+  //   }
+  //   setState(() {
+  //     _usuario = user;
+  //   });
+
+  // }
 
   Future<void> _carregar() async {
     setState(() {
@@ -34,7 +50,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     });
     try {
       //TODO: paginado mostrar algumas de um tempo atras e todas no futuro, feitas e ainda não feitas
-      //mostrar as rodadas onde o usuario esta escalado
+      //mostrar as rodadas onde o usuario esta escalado,
       final lista = await RodadaService.rodadasDoMilitar();
       setState(() {
         _rodadas = lista;
@@ -52,7 +68,26 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Minhas escalas'),
+        toolbarHeight: 70, //
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Bem-vindo(a), ${_usuario!.nome}',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Colors.white70, // Um tom mais suave para o boas-vindas
+              ),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'Minhas escalas',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
             tooltip: 'Sair',

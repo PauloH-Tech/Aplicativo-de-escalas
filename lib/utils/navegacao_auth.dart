@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sistema_escalas_front/models/usuario.dart';
-import 'package:sistema_escalas_front/screens/admin_home_screen.dart';
-import 'package:sistema_escalas_front/screens/login_screen.dart';
-import 'package:sistema_escalas_front/screens/user_home_screen.dart';
-import 'package:sistema_escalas_front/services/auth_service.dart';
+import 'package:escalas_extras/models/usuario.dart';
+import 'package:escalas_extras/screens/admin_home_screen.dart';
+import 'package:escalas_extras/screens/login_screen.dart';
+import 'package:escalas_extras/screens/user_home_screen.dart';
+import 'package:escalas_extras/services/auth_service.dart';
 
 class NavegacaoAuth {
   static Widget telaPorRole(Role role) => switch (role) {

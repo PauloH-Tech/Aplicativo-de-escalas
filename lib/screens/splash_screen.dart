@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sistema_escalas_front/models/usuario.dart';
-import 'package:sistema_escalas_front/screens/login_screen.dart';
-import 'package:sistema_escalas_front/services/auth_service.dart';
-import 'package:sistema_escalas_front/utils/navegacao_auth.dart';
+import 'package:escalas_extras/models/usuario.dart';
+import 'package:escalas_extras/screens/login_screen.dart';
+import 'package:escalas_extras/services/auth_service.dart';
+import 'package:escalas_extras/utils/navegacao_auth.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _iniciar() async {
     final resultados = await Future.wait([
-      Future.delayed(const Duration(seconds: 2)),
+      Future.delayed(const Duration(seconds: 3)),
       AuthService.carregarSessao(),
     ]);
     final usuario = resultados[1] as Usuario?;

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sistema_escalas_front/models/rodada.dart';
-import 'package:sistema_escalas_front/models/escala_extra_request.dart';
-import 'package:sistema_escalas_front/services/escala_service.dart';
-import 'package:sistema_escalas_front/services/rodada_service.dart';
-import 'package:sistema_escalas_front/widgets/feedback_views.dart';
+import 'package:escalas_extras/models/rodada.dart';
+import 'package:escalas_extras/models/escala_extra_request.dart';
+import 'package:escalas_extras/services/escala_service.dart';
+import 'package:escalas_extras/services/rodada_service.dart';
+import 'package:escalas_extras/widgets/feedback_views.dart';
 
 import '../models/militar_fila.dart';
 import '../widgets/app_theme.dart';
@@ -299,7 +299,7 @@ class _MilitarFilaCard extends StatelessWidget {
                           ),
                         ),
                         subtitle: Text(
-                          'Escalas: ${militarFila.qtEscalas}\nUltima: $ultimaEscala',
+                          'Escalas: ${militarFila.qtEscalas}\nÚltima: $ultimaEscala',
                         ),
                         trailing: militarFila.tpAfastamento != null
                             ? Text(

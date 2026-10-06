@@ -1,7 +1,7 @@
 import 'dart:developer' as dev;
 
-import 'package:sistema_escalas_front/models/militar.dart';
-import 'package:sistema_escalas_front/services/api_service.dart';
+import 'package:escalas_extras/models/militar.dart';
+import 'package:escalas_extras/services/api_service.dart';
 
 class MilitarService {
   static Future<List<Militar>> listarTodos() async {

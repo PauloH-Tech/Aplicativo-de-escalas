@@ -1,9 +1,9 @@
 import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
-import 'package:sistema_escalas_front/models/militar.dart';
-import 'package:sistema_escalas_front/services/militar_service.dart';
-import 'package:sistema_escalas_front/widgets/feedback_views.dart';
+import 'package:escalas_extras/models/militar.dart';
+import 'package:escalas_extras/services/militar_service.dart';
+import 'package:escalas_extras/widgets/feedback_views.dart';
 
 import '../utils/confirmacao_screen.dart';
 
@@ -96,7 +96,7 @@ class _MilitaresInativosScreenState extends State<MilitaresInativosScreen> {
                         }
                         setState(() {
                           _militaresInativos.removeWhere(
-                                (m) => m.id == militar.id,
+                            (m) => m.id == militar.id,
                           );
                         });
                         ScaffoldMessenger.of(context).showSnackBar(
